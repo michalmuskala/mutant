@@ -109,7 +109,7 @@ unlock_image(IMAGE *image)
 
 void
 draw_hline(IMAGE *image, const int y, const int x1, const int x2,
-           const COLOR color)
+           const COLOR *color)
 {
     byte r = 0, g = 0, b = 0, a = 0;
     byte ar = 0, ag = 0, ab = 0;
@@ -117,12 +117,12 @@ draw_hline(IMAGE *image, const int y, const int x1, const int x2,
     unsigned int *pixel = NULL, *pixel_end = NULL;
     SDL_Surface *s = NULL;
 
-    alpha = (double) color.a / COLOR_MAX;
+    alpha = (double) color->a / COLOR_MAX;
     invalpha = 1 - alpha;
 
-    ar = color.r * alpha;
-    ag = color.g * alpha;
-    ab = color.b * alpha;
+    ar = color->r * alpha;
+    ag = color->g * alpha;
+    ab = color->b * alpha;
 
     s = image->surface;
     pixel = ((unsigned int *) s->pixels) + s->w * y + x1;

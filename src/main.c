@@ -32,9 +32,6 @@ free_main_triangles()
 int
 main(int argc, char **argv)
 {
-    COLOR red = {0, 255, 0, 200};
-    int i = 0;
-
     if (argc < 3) {
         return 1;
     }
@@ -60,10 +57,6 @@ main(int argc, char **argv)
 
     clear_display(main_display);
 
-    for (i = 0; i < height_image(orig_img) - 1; i+=5) {
-        draw_hline(orig_img, i, 0, width_image(orig_img) - 1, red);
-    }
-
     if (render_image(main_display, orig_img, RECT_ORIG)) {
         return 1;
     }
@@ -72,8 +65,7 @@ main(int argc, char **argv)
     delay(atoi(argv[2]));
 
     /* Keep things consistient across runs for the time being */
-    /* srand(time(NULL)); */
-    srand(1);
+    srand(1/* time(NULL) */);
 
     main_triangles = random_triangles(MAX_TRIANGLES,
                                       width_image(orig_img),
@@ -82,8 +74,6 @@ main(int argc, char **argv)
         return 1;
     }
     atexit(free_main_triangles);
-
-    /* triangles = init_triangles(); */
 
     /* while (!quit()) { */
     /*     mutate_triangles(triangles); */
