@@ -25,21 +25,34 @@ IMAGE *
 read_static_image(char *file)
 {
     IMAGE *image = NULL;
+    SDL_Surface *read = NULL;
 
-    image = malloc(sizeof(IMAGE));
+    /* Set to zero to have NULL pointers */
+    image = calloc(1, sizeof(IMAGE));
 
     if (image == NULL) {
         perror("Reading image");
         return NULL;
     }
 
-    image->surface = IMG_Load(file);
+    read = IMG_Load(file);
+
+    if (read == NULL) {
+        fprintf(stderr, "Reading image: %s\n", IMG_GetError());
+        free_image(image);
+        return NULL;
+    }
+
+    image->surface = SDL_ConvertSurfaceFormat(read, MUTANT_SDL_FORMAT, 0);
 
     if (image->surface == NULL) {
         fprintf(stderr, "Reading image: %s", IMG_GetError());
         free_image(image);
+        SDL_FreeSurface(read);
         return NULL;
     }
+
+    SDL_FreeSurface(read);
 
     return image;
 }
@@ -104,21 +117,21 @@ draw_hline(IMAGE *image, const int y, const int x1, const int x2,
     unsigned int *pixel = NULL, *pixel_end = NULL;
     SDL_Surface *s = NULL;
 
-    alpha = color.a / COLOR_MAX;
+    alpha = (double) color.a / COLOR_MAX;
     invalpha = 1 - alpha;
 
-    ar = r * alpha;
-    ag = g * alpha;
-    ab = b * alpha;
+    ar = color.r * alpha;
+    ag = color.g * alpha;
+    ab = color.b * alpha;
 
     s = image->surface;
-    pixel = ((unsigned int *) s->pixels) + s->pitch * y + x1;
+    pixel = ((unsigned int *) s->pixels) + s->w * y + x1;
     pixel_end = pixel + (x2 - x1);
 
     for (; pixel <= pixel_end; pixel++) {
         SDL_GetRGBA(*pixel, s->format, &r, &g, &b, &a);
 
-        alpha_src = a / COLOR_MAX;
+        alpha_src = (double) a / COLOR_MAX;
 
         r = (ar + r * alpha_src * invalpha) / (alpha_src);
         g = (ag + g * alpha_src * invalpha) / (alpha_src);

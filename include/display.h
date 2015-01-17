@@ -4,9 +4,6 @@
 #include <SDL.h>
 #include "image.h"
 
-#define MUTANT_SDL_FORMAT SDL_PIXELFORMAT_RGBA8888
-#define MUTANT_FULL_DEPTH 32
-
 #define WINDOW_NAME "Mutant - image evolution"
 #define IMAGE_NAME_HEIGHT 16
 #define BORDER_WIDTH 2

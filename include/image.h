@@ -4,6 +4,8 @@
 #include <SDL_image.h>
 #include "color.h"
 
+#define MUTANT_SDL_FORMAT SDL_PIXELFORMAT_RGBA8888
+
 extern int init_image();
 extern void quit_image();
 

@@ -32,6 +32,9 @@ free_main_triangles()
 int
 main(int argc, char **argv)
 {
+    COLOR red = {0, 255, 0, 200};
+    int i = 0;
+
     if (argc < 3) {
         return 1;
     }
@@ -56,6 +59,10 @@ main(int argc, char **argv)
     atexit(free_main_display);
 
     clear_display(main_display);
+
+    for (i = 0; i < height_image(orig_img) - 1; i+=5) {
+        draw_hline(orig_img, i, 0, width_image(orig_img) - 1, red);
+    }
 
     if (render_image(main_display, orig_img, RECT_ORIG)) {
         return 1;
