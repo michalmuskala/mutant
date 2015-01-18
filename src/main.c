@@ -10,7 +10,7 @@ static DISPLAY *main_display = NULL;
 static TRIANGLES *main_triangles = NULL;
 
 static void
-free_original_image()
+free_orig_img()
 {
     free_image(orig_img);
 }
@@ -32,28 +32,34 @@ free_main_triangles()
 int
 main(int argc, char **argv)
 {
+    RawImage *raw_image = NULL;
+
     if (argc < 3) {
-        return 1;
+        return -1;
     }
 
     if (init_display() || init_image()) {
-        return 1;
+        return -1;
     }
     atexit(quit_image);
     atexit(quit_display);
 
-    orig_img = read_static_image(argv[1]);
-    if (orig_img == NULL) {
-        return 1;
+    raw_image = read_raw_image(argv[1]);
+    if (raw_image == NULL) {
+        return -1;
     }
-    atexit(free_original_image);
 
-    main_display = create_display(width_image(orig_img),
-                                  height_image(orig_img));
+    main_display = create_display(raw_image->w, raw_image->h);
     if (main_display == NULL) {
-        return 1;
+        return -1;
     }
     atexit(free_main_display);
+
+    orig_img = convert_image(main_display, raw_image);
+    if (orig_img == NULL) {
+        return -1;
+    }
+    atexit(free_orig_img);
 
     clear_display(main_display);
 
@@ -68,8 +74,7 @@ main(int argc, char **argv)
     srand(1/* time(NULL) */);
 
     main_triangles = random_triangles(MAX_TRIANGLES,
-                                      width_image(orig_img),
-                                      height_image(orig_img));
+                                      orig_img->w, orig_img->h);
     if (main_triangles == NULL) {
         return 1;
     }

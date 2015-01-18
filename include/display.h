@@ -45,6 +45,7 @@ extern void free_display(DISPLAY *);
 extern void refresh_display(DISPLAY *);
 extern void clear_display(DISPLAY *);
 
+extern IMAGE *convert_image(DISPLAY *, RawImage *);
 extern int render_image(DISPLAY *, const IMAGE *, const DISPLAY_AREA);
 extern int write_on_rect(DISPLAY *, const DISPLAY_AREA, const char *);
 

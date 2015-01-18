@@ -138,35 +138,56 @@ rect_from_area(const DISPLAY *display, const DISPLAY_AREA area)
     }
 }
 
+IMAGE *
+convert_image(DISPLAY *display, RawImage *raw)
+{
+    IMAGE *i = NULL;
+
+    /* Set to zero to have NULL pointers */
+    i = calloc(1, sizeof(IMAGE));
+
+    if (i == NULL) {
+        perror("Reading image");
+        return NULL;
+    }
+
+    i->texture = SDL_CreateTextureFromSurface(display->renderer, raw);
+
+    if (i->texture == NULL) {
+        fprintf(stderr, "Reading image: %s\n", IMG_GetError());
+        free_image(i);
+        SDL_FreeSurface(raw);
+        return NULL;
+    }
+
+    if (SDL_QueryTexture(i->texture, &i->format, &i->access, &i->w, &i->h)) {
+        fprintf(stderr, "Reading image: %s\n", SDL_GetError());
+        free_image(i);
+        SDL_FreeSurface(raw);
+        return NULL;
+    }
+
+    SDL_FreeSurface(raw);
+
+    return i;
+}
+
 int
 render_image(DISPLAY *display, const IMAGE *image, const DISPLAY_AREA area)
 {
-    SDL_Texture *texture = NULL;
     SDL_Rect *rect = NULL;
-    SDL_Surface *surface = NULL;
 
     if (display == NULL || image == NULL) {
         return -1;
     }
 
-    surface = surface_from_image(image);
-
-    texture = SDL_CreateTextureFromSurface(display->renderer, surface);
-
-    if (texture == NULL) {
-        fprintf(stderr, "Rendering image: %s\n", SDL_GetError());
-        return -1;
-    }
-
     rect = rect_from_area(display, area);
 
-    if (SDL_RenderCopy(display->renderer, texture, NULL, rect)) {
+    if (SDL_RenderCopy(display->renderer, image->texture, NULL, rect)) {
         fprintf(stderr, "Rendering image: %s\n", SDL_GetError());
-        SDL_DestroyTexture(texture);
         return -1;
     }
 
-    SDL_DestroyTexture(texture);
     return 0;
 }
 

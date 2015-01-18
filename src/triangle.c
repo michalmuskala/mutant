@@ -102,8 +102,6 @@ rasterize_triangle(TRIANGLE *t, IMAGE *image)
 
     normalize_triangle(t);
 
-    lock_image(image);
-
     if (t->v2.y == t->v3.y) {
         rasterize_bottom_triangle(&t->v1, &t->v2, &t->v3, &t->color, image);
     } else if (t->v1.y == t->v2.y) {
@@ -118,6 +116,4 @@ rasterize_triangle(TRIANGLE *t, IMAGE *image)
         rasterize_bottom_triangle(&t->v1, &t->v2, &middle, &t->color, image);
         rasterize_top_triangle(&t->v2, &middle, &t->v3, &t->color, image);
     }
-
-    unlock_image(image);
 }

@@ -11,18 +11,16 @@ extern int init_image();
 extern void quit_image();
 
 typedef struct IMAGE {
-    SDL_Surface *surface;
+    int w, h, access;
+    unsigned int format;
     SDL_Texture *texture;
 } IMAGE;
 
-extern IMAGE *read_static_image(char *);
-extern void free_image(IMAGE *);
-extern SDL_Surface *surface_from_image(const IMAGE *);
-extern void lock_image(IMAGE *);
-extern void unlock_image(IMAGE *);
+typedef SDL_Surface RawImage;
 
-extern int width_image(IMAGE *);
-extern int height_image(IMAGE *);
+extern RawImage *read_raw_image(char *);
+extern IMAGE *init_dynamic_image(int, int);
+extern void free_image(IMAGE *);
 
 extern void draw_hline(IMAGE *, const int, const int, const int, const COLOR *);
 
