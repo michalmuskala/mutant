@@ -117,13 +117,5 @@ main(int argc, char **argv)
 
     delay(atoi(argv[2]));
 
-
-    /* while (!quit()) { */
-    /*     mutate_triangles(triangles); */
-    /*     rasterize_triangles(triangles); */
-    /*     render_image(triangles); */
-    /*     refresh_display(main_display); */
-    /* } */
-
     return 0;
 }

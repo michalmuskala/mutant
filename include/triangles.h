@@ -2,6 +2,7 @@
 #define MUTANT_TRIANGLES_H_
 
 #include "triangle.h"
+#include "image.h"
 
 typedef struct TRAINGLES {
     TRIANGLE *triangles;
