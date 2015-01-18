@@ -179,6 +179,8 @@ init_dynamic_image(DISPLAY *display, const int w, const int h)
 {
     IMAGE *i = NULL;
     int buffer_len = 0;
+    int j = 0;
+    unsigned int color;
 
     /* Set to zero to have NULL pointers */
     i = calloc(1, sizeof(*i));
@@ -219,7 +221,11 @@ init_dynamic_image(DISPLAY *display, const int w, const int h)
     }
 
     /* Set all to black */
-    memset(i->buffer, COLOR_MAX, buffer_len);
+    color = SDL_MapRGBA(i->format, 0, 0, 0, COLOR_MAX);
+
+    for (j = 0; j < w * h; j++) {
+        i->buffer[j] = color;
+    }
 
     return i;
 }
@@ -256,26 +262,3 @@ clear_display(DISPLAY *display)
                            BACKGROUND_B, BACKGROUND_A);
     SDL_RenderClear(display->renderer);
 }
-
-/* int */
-/* write_on_rect(DISPLAY *display, const DISPLAY_AREA area, const char *str) */
-/* { */
-/*     /\* SDL_Rect *rect = NULL; *\/ */
-/*     /\* int res; *\/ */
-
-/*     /\* rect = rect_from_area(display, area); *\/ */
-
-/*     /\* if (rect == NULL) { *\/ */
-/*     /\*     return -1; *\/ */
-/*     /\* } *\/ */
-
-/*     /\* res = stringRGBA(display->renderer, *\/ */
-/*     /\*                   rect->x, rect->y, str, TEXT_R, TEXT_G, TEXT_B, TEXT_A); *\/ */
-
-/*     /\* if (res) { *\/ */
-/*     /\*     fprintf(stderr, "Writing: %s\n", SDL_GetError()); *\/ */
-/*     /\* } *\/ */
-
-/*     /\* return res; *\/ */
-/*     return 0; */
-/* } */
