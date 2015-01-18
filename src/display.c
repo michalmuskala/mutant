@@ -34,8 +34,8 @@ create_display(int image_width, int image_height)
 {
     DISPLAY *display = NULL;
 
-    display = malloc(sizeof(DISPLAY));
-    memset(display, 0, sizeof(DISPLAY));
+    /* We want null pointers */
+    display = calloc(1, sizeof(*display));
 
     if (display == NULL) {
         perror("Initializing display");
@@ -144,7 +144,7 @@ convert_image(DISPLAY *display, RawImage *raw)
     IMAGE *i = NULL;
 
     /* Set to zero to have NULL pointers */
-    i = calloc(1, sizeof(IMAGE));
+    i = calloc(1, sizeof(*i));
 
     if (i == NULL) {
         perror("Reading image");
@@ -160,17 +160,70 @@ convert_image(DISPLAY *display, RawImage *raw)
         return NULL;
     }
 
-    if (SDL_QueryTexture(i->texture, &i->format, &i->access, &i->w, &i->h)) {
+    if (SDL_QueryTexture(i->texture, &i->iformat, &i->access, &i->w, &i->h)) {
         fprintf(stderr, "Reading image: %s\n", SDL_GetError());
         free_image(i);
         SDL_FreeSurface(raw);
         return NULL;
     }
 
+    i->buffer = NULL;
+
     SDL_FreeSurface(raw);
 
     return i;
 }
+
+IMAGE *
+init_dynamic_image(DISPLAY *display, const int w, const int h)
+{
+    IMAGE *i = NULL;
+    int buffer_len = 0;
+
+    /* Set to zero to have NULL pointers */
+    i = calloc(1, sizeof(*i));
+
+    if (i == NULL) {
+        perror("Reading image");
+        return NULL;
+    }
+
+    i->w = w;
+    i->h = h;
+    i->iformat = MUTANT_SDL_FORMAT;
+    i->access = SDL_TEXTUREACCESS_STREAMING;
+    i->texture = SDL_CreateTexture(display->renderer, i->iformat,
+                                   i->access, i->w, i->h);
+
+    if (i->texture == NULL) {
+        fprintf(stderr, "Initializing image: %s\n", IMG_GetError());
+        free_image(i);
+        return NULL;
+    }
+
+    i->format = SDL_AllocFormat(i->iformat);
+
+    if (i->format == NULL) {
+        fprintf(stderr, "Initializing image: %s\n", IMG_GetError());
+        free_image(i);
+        return NULL;
+    }
+
+    buffer_len = sizeof(*i->buffer) * w * h;
+    i->buffer = malloc(buffer_len);
+
+    if (i->buffer == NULL) {
+        perror("Initializing image");
+        free_image(i);
+        return NULL;
+    }
+
+    /* Set all to black */
+    memset(i->buffer, COLOR_MAX, buffer_len);
+
+    return i;
+}
+
 
 int
 render_image(DISPLAY *display, const IMAGE *image, const DISPLAY_AREA area)

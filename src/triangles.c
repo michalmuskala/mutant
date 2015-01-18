@@ -64,8 +64,18 @@ random_triangles(int count, int max_w, int max_h)
          triangles->count++) {
         randomize_triangle(&triangles->triangles[triangles->count],
                            max_w, max_h);
-        log_triangle(&triangles->triangles[triangles->count]);
     }
 
     return triangles;
+}
+
+void
+rasterize_triangles(TRIANGLES *triangles, IMAGE *image)
+{
+    int i = 0;
+
+    for (i = 0; i < triangles->count; i++) {
+        normalize_triangle(&triangles->triangles[i]);
+        rasterize_triangle(&triangles->triangles[i], image);
+    }
 }

@@ -16,6 +16,6 @@ typedef struct TRIANGLE {
 extern void randomize_triangle(TRIANGLE *, const int, const int);
 extern void log_triangle(const TRIANGLE *);
 extern void normalize_triangle(TRIANGLE *);
-extern void rasterize_triangle(TRIANGLE *, IMAGE *);
+extern void rasterize_triangle(const TRIANGLE *, IMAGE *);
 
 #endif /* MUTANT_TRIANGLE_H_ */

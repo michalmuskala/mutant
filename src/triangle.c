@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 void
-randomize_triangle(TRIANGLE *triangle, const int max_h, const int max_w)
+randomize_triangle(TRIANGLE *triangle, const int max_w, const int max_h)
 {
     triangle->v1.x = rand() % max_w;
     triangle->v2.x = rand() % max_w;
@@ -62,12 +62,12 @@ rasterize_top_triangle(const VERTICE *v1, const VERTICE *v2, const VERTICE *v3,
                        const COLOR *color, IMAGE *image)
 {
     /* invslope = 1 / slope = dx / dy */
-    float invslope1 = 0, invslope2 = 0;
-    float currx1 = 0, currx2 = 0;
+    double invslope1 = 0, invslope2 = 0;
+    double currx1 = 0, currx2 = 0;
     int curry = 0;
 
-    invslope1 = (v3->x - v1->x) / (v3->y - v1->y);
-    invslope2 = (v3->x - v2->x) / (v3->y - v2->y);
+    invslope1 = (double) (v3->x - v1->x) / (v3->y - v1->y);
+    invslope2 = (double) (v3->x - v2->x) / (v3->y - v2->y);
 
     for (curry = v3->y, currx1 = v3->x, currx2 = v3->x;
          curry > v1->y;
@@ -81,12 +81,12 @@ rasterize_bottom_triangle(const VERTICE *v1, const VERTICE *v2,
                           const VERTICE *v3, const COLOR *color, IMAGE *image)
 {
     /* invslope = 1 / slope = dx / dy */
-    float invslope1 = 0, invslope2 = 0;
-    float currx1 = 0, currx2 = 0;
+    double invslope1 = 0, invslope2 = 0;
+    double currx1 = 0, currx2 = 0;
     int curry = 0;
 
-    invslope1 = (v2->x - v1->x) / (v2->y - v1->y);
-    invslope2 = (v3->x - v1->x) / (v3->y - v1->y);
+    invslope1 = (double) (v2->x - v1->x) / (v2->y - v1->y);
+    invslope2 = (double) (v3->x - v1->x) / (v3->y - v1->y);
 
     for (curry = v1->y, currx1 = v1->x, currx2 = v1->x;
          curry <= v2->y;
@@ -96,11 +96,9 @@ rasterize_bottom_triangle(const VERTICE *v1, const VERTICE *v2,
 }
 
 void
-rasterize_triangle(TRIANGLE *t, IMAGE *image)
+rasterize_triangle(const TRIANGLE *t, IMAGE *image)
 {
     VERTICE middle = {0, 0};
-
-    normalize_triangle(t);
 
     if (t->v2.y == t->v3.y) {
         rasterize_bottom_triangle(&t->v1, &t->v2, &t->v3, &t->color, image);
