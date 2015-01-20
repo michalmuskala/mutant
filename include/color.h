@@ -10,5 +10,6 @@ typedef struct COLOR {
 #define COLOR_MAX 255
 
 extern COLOR make_color(const byte, const byte, const byte, const byte);
+extern double color_distance(const COLOR, const COLOR);
 
 #endif /* MUTANT_COLOR_H_ */

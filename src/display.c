@@ -142,6 +142,8 @@ IMAGE *
 convert_image(DISPLAY *display, RawImage *raw)
 {
     IMAGE *i = NULL;
+    int row = 0;
+    unsigned int *dst = NULL, *src = NULL;
 
     /* Set to zero to have NULL pointers */
     i = calloc(1, sizeof(*i));
@@ -167,8 +169,38 @@ convert_image(DISPLAY *display, RawImage *raw)
         return NULL;
     }
 
-    i->buffer = NULL;
+    i->format = SDL_AllocFormat(i->iformat);
 
+    if (i->format == NULL) {
+        fprintf(stderr, "Initializing image: %s\n", IMG_GetError());
+        free_image(i);
+        SDL_FreeSurface(raw);
+        return NULL;
+    }
+
+    i->buffer = malloc(sizeof(*i->buffer) * i->w * i->h);
+
+    if (i->buffer == NULL) {
+        perror("Initializing image");
+        free_image(i);
+        SDL_FreeSurface(raw);
+        return NULL;
+    }
+
+    if (SDL_MUSTLOCK(raw)) {
+        SDL_LockSurface(raw);
+    }
+
+    src = raw->pixels;
+    dst = i->buffer;
+
+    for (row = 0; row < raw->h; row++) {
+        memcpy(dst, src, raw->w * sizeof(*dst));
+        dst += raw->w;
+        src += raw->pitch / sizeof(*src);
+    }
+
+    SDL_UnlockSurface(raw);
     SDL_FreeSurface(raw);
 
     return i;

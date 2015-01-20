@@ -23,6 +23,7 @@ extern void quit_image();
 extern RawImage *read_raw_image(char *);
 extern int update_texture_image(IMAGE *);
 extern void free_image(IMAGE *);
+extern double rate_image(const IMAGE *, const IMAGE *);
 
 extern void draw_hline(IMAGE *, const int, const int, const int, const COLOR *);
 

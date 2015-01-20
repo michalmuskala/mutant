@@ -83,6 +83,29 @@ free_image(IMAGE *image)
     free(image);
 }
 
+
+double
+rate_image(const IMAGE *original, const IMAGE *modified)
+{
+    unsigned int *org_pixel = NULL, *org_pixel_end = NULL;
+    unsigned int *mod_pixel = NULL;
+    COLOR orgc = {0}, modc = {0};
+    double rate = 0;
+
+    org_pixel_end = original->buffer + original->w * original->h;
+
+    for (org_pixel = original->buffer, mod_pixel = modified->buffer;
+         org_pixel <= org_pixel_end;
+         mod_pixel++, org_pixel++) {
+        SDL_GetRGB(*org_pixel, original->format, &orgc.r, &orgc.g, &orgc.b);
+        SDL_GetRGB(*mod_pixel, modified->format, &modc.r, &modc.g, &modc.b);
+
+        rate += color_distance(orgc, modc);
+    }
+
+    return rate;
+}
+
 void
 draw_hline(IMAGE *image, const int y, const int x1, const int x2,
            const COLOR *color)

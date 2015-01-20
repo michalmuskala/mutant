@@ -78,7 +78,8 @@ main(int argc, char **argv)
     refresh_display(main_display);
 
     /* Keep things consistient across runs for the time being */
-    srand(time(NULL)/* time(NULL) */);
+    /* srand(time(NULL)); */
+    srand(1);
 
     main_triangles = random_triangles(MAX_TRIANGLES,
                                       orig_img->w, orig_img->h);
@@ -114,6 +115,9 @@ main(int argc, char **argv)
     }
 
     refresh_display(main_display);
+
+    fprintf(stderr, "Difference between images: %g\n",
+            rate_image(orig_img, img));
 
     delay(atoi(argv[2]));
 
