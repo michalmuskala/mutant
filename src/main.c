@@ -35,7 +35,7 @@ free_main_triangles()
     free_triangles(main_triangles);
 }
 
-#define MAX_TRIANGLES 60
+#define MAX_TRIANGLES 10
 
 int
 main(int argc, char **argv)

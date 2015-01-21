@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 int
 init_display()
@@ -208,8 +209,10 @@ convert_image(DISPLAY *display, RawImage *raw)
     src = raw->pixels;
     dst = i->buffer;
 
+    assert(raw->pitch % sizeof(*src) == 0);
+
     for (row = 0; row < raw->h; row++) {
-        memcpy(dst, src, raw->w * sizeof(*dst));
+        memcpy(dst, src, raw->w * sizeof(*src));
         dst += raw->w;
         src += raw->pitch / sizeof(*src);
     }

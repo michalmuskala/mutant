@@ -5,7 +5,7 @@
 #include <memory.h>
 
 TRIANGLES *
-init_triangles(int count)
+init_triangles(int count, int max_w, int max_h)
 {
     TRIANGLES *triangles = NULL;
 
@@ -30,6 +30,8 @@ init_triangles(int count)
 
     triangles->max_count = count;
     triangles->count = 0;
+    triangles->max_w = max_w;
+    triangles->max_h = max_h;
 
     return triangles;
 }
@@ -53,17 +55,17 @@ random_triangles(int count, int max_w, int max_h)
 {
     TRIANGLES *triangles = NULL;
 
-    triangles = init_triangles(count);
+    triangles = init_triangles(count, max_w, max_h);
 
     if (triangles == NULL) {
         return NULL;
     }
 
     for (triangles->count = 0;
-         triangles->count < triangles->max_count;
+         triangles->count <= triangles->max_count;
          triangles->count++) {
         randomize_triangle(&triangles->triangles[triangles->count],
-                           max_w, max_h);
+                           triangles->max_w, triangles->max_h);
     }
 
     return triangles;
@@ -77,5 +79,30 @@ rasterize_triangles(TRIANGLES *triangles, IMAGE *image)
     for (i = 0; i < triangles->count; i++) {
         normalize_triangle(&triangles->triangles[i]);
         rasterize_triangle(&triangles->triangles[i], image);
+    }
+}
+
+void
+mutate_triangles(TRIANGLES *t)
+{
+    int deli = 0;
+
+    (void) t;
+
+    if (t->count < t->max_count && rand() % ADDITION_CHANCE) {
+        randomize_triangle(&t->triangles[t->count++], t->max_w, t->max_h);
+        return;
+    }
+
+    if (t->count > 0 && rand() % REMOVAL_CHANCE) {
+        deli = rand() % t->count;
+
+        if (deli == t->count - 1) {
+            /* It's last triangle */
+            t->count--;
+        } else {
+            memmove(&t->triangles[deli], &t->triangles[deli+1],
+                    sizeof(t->triangles[deli]) * (t->count - deli));
+        }
     }
 }

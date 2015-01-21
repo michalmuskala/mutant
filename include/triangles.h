@@ -4,16 +4,23 @@
 #include "triangle.h"
 #include "image.h"
 
+#define ADDITION_CHANCE 10
+#define SWAP_CHANCE 20
+#define MUTATION_CHANCE 20
+#define REMOVAL_CHANCE 30
+
 typedef struct TRAINGLES {
-    TRIANGLE *triangles;
     int max_count;
     int count;
+    int max_w, max_h;
+    TRIANGLE *triangles;
 } TRIANGLES;
 
-extern TRIANGLES *init_triangles(int);
+extern TRIANGLES *init_triangles(int, int, int);
 extern void free_triangles(TRIANGLES *);
 
 extern TRIANGLES *random_triangles(int, int, int);
 extern void rasterize_triangles(TRIANGLES *, IMAGE *);
+extern void mutate_triangles(TRIANGLES *);
 
 #endif /* MUTANT_TRIANGLES_H_ */

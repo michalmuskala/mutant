@@ -115,3 +115,10 @@ rasterize_triangle(const TRIANGLE *t, IMAGE *image)
         rasterize_top_triangle(&t->v2, &middle, &t->v3, &t->color, image);
     }
 }
+
+void
+mutate_triangle(TRIANGLE *triangle)
+{
+    (void) triangle;
+
+}
