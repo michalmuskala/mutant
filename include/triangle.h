@@ -17,6 +17,6 @@ extern void randomize_triangle(TRIANGLE *, const int, const int);
 extern void log_triangle(const TRIANGLE *);
 extern void normalize_triangle(TRIANGLE *);
 extern void rasterize_triangle(const TRIANGLE *, IMAGE *);
-extern void mutate_triangle(TRIANGLE *);
+extern void mutate_triangle(TRIANGLE *, const int, const int);
 
 #endif /* MUTANT_TRIANGLE_H_ */

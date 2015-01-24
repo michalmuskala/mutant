@@ -118,6 +118,19 @@ rate_image(const IMAGE *original, const IMAGE *modified)
 }
 
 void
+clear_image(IMAGE *image)
+{
+    unsigned int color = 0;
+    int i = 0;
+
+    color = SDL_MapRGBA(image->format, 0, 0, 0, COLOR_MAX);
+
+    for (i = 0; i < image->w * image->h; i++) {
+        image->buffer[i] = color;
+    }
+}
+
+void
 draw_hline(IMAGE *image, const int y, const int x1, const int x2,
            const COLOR *color)
 {

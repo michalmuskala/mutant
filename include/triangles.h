@@ -5,9 +5,10 @@
 #include "image.h"
 
 #define ADDITION_CHANCE 10
-#define SWAP_CHANCE 20
 #define MUTATION_CHANCE 20
-#define REMOVAL_CHANCE 30
+#define DELETION_CHANCE 30
+
+#define CHECK_CHANCE(chance) (rand() % (chance) == 0)
 
 typedef struct TRAINGLES {
     int max_count;

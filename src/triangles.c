@@ -33,6 +33,11 @@ init_triangles(int count, int max_w, int max_h)
     triangles->max_w = max_w;
     triangles->max_h = max_h;
 
+    /* Add initial triangle */
+    randomize_triangle(&triangles->triangles[triangles->count],
+                       triangles->max_w, triangles->max_h);
+    triangles->count++;
+
     return triangles;
 }
 
@@ -62,7 +67,7 @@ random_triangles(int count, int max_w, int max_h)
     }
 
     for (triangles->count = 0;
-         triangles->count <= triangles->max_count;
+         triangles->count < triangles->max_count;
          triangles->count++) {
         randomize_triangle(&triangles->triangles[triangles->count],
                            triangles->max_w, triangles->max_h);
@@ -76,33 +81,60 @@ rasterize_triangles(TRIANGLES *triangles, IMAGE *image)
 {
     int i = 0;
 
+    clear_image(image);
+
     for (i = 0; i < triangles->count; i++) {
         normalize_triangle(&triangles->triangles[i]);
         rasterize_triangle(&triangles->triangles[i], image);
     }
 }
 
-void
-mutate_triangles(TRIANGLES *t)
+static void
+add_triangle_to_triangles(TRIANGLES *t)
+{
+    randomize_triangle(&t->triangles[t->count], t->max_w, t->max_h);
+    t->count++;
+}
+
+static void
+delete_triangle_from_triangles(TRIANGLES *t)
 {
     int deli = 0;
 
-    (void) t;
+    deli = rand() % t->count;
 
-    if (t->count < t->max_count && rand() % ADDITION_CHANCE) {
-        randomize_triangle(&t->triangles[t->count++], t->max_w, t->max_h);
+    if (deli == t->count - 1) {
+        /* It's last triangle - decrease count */
+        t->count--;
+    } else {
+        /* move following triangles back by 1 */
+        memmove(&t->triangles[deli], &t->triangles[deli+1],
+                sizeof(t->triangles[deli]) * (t->count - deli));
+        t->count--;
+    }
+}
+
+void
+mutate_triangles(TRIANGLES *t)
+{
+    int i = 0;
+
+    if (t->count < t->max_count && CHECK_CHANCE(ADDITION_CHANCE)) {
+        fprintf(stderr, "Adding triangle\n");
+        add_triangle_to_triangles(t);
         return;
     }
 
-    if (t->count > 0 && rand() % REMOVAL_CHANCE) {
-        deli = rand() % t->count;
+    if (t->count > 0 && CHECK_CHANCE(DELETION_CHANCE)) {
+        fprintf(stderr, "Deleting triangle\n");
+        delete_triangle_from_triangles(t);
+        return;
+    }
 
-        if (deli == t->count - 1) {
-            /* It's last triangle */
-            t->count--;
-        } else {
-            memmove(&t->triangles[deli], &t->triangles[deli+1],
-                    sizeof(t->triangles[deli]) * (t->count - deli));
+    for (i = 0; i < t->count; i++) {
+        if (CHECK_CHANCE(MUTATION_CHANCE)) {
+            fprintf(stderr, "Mutating triangle#%d\n", i);
+            mutate_triangle(&t->triangles[i], t->max_w, t->max_h);
         }
     }
 }

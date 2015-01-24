@@ -209,8 +209,6 @@ convert_image(DISPLAY *display, RawImage *raw)
     src = raw->pixels;
     dst = i->buffer;
 
-    assert(raw->pitch % sizeof(*src) == 0);
-
     for (row = 0; row < raw->h; row++) {
         memcpy(dst, src, raw->w * sizeof(*src));
         dst += raw->w;
@@ -228,8 +226,6 @@ init_dynamic_image(DISPLAY *display, const int w, const int h)
 {
     IMAGE *i = NULL;
     int buffer_len = 0;
-    int j = 0;
-    unsigned int color;
 
     /* Set to zero to have NULL pointers */
     i = calloc(1, sizeof(*i));
@@ -269,12 +265,7 @@ init_dynamic_image(DISPLAY *display, const int w, const int h)
         return NULL;
     }
 
-    /* Set all to black */
-    color = SDL_MapRGBA(i->format, 0, 0, 0, COLOR_MAX);
-
-    for (j = 0; j < w * h; j++) {
-        i->buffer[j] = color;
-    }
+    clear_image(i);
 
     return i;
 }

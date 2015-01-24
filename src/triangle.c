@@ -117,8 +117,9 @@ rasterize_triangle(const TRIANGLE *t, IMAGE *image)
 }
 
 void
-mutate_triangle(TRIANGLE *triangle)
+mutate_triangle(TRIANGLE *triangle, const int max_w, const int max_h)
 {
     (void) triangle;
-
+    (void) max_w;
+    (void) max_h;
 }

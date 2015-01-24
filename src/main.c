@@ -35,12 +35,13 @@ free_main_triangles()
     free_triangles(main_triangles);
 }
 
-#define MAX_TRIANGLES 10
+#define MAX_TRIANGLES 50
 
 int
 main(int argc, char **argv)
 {
     RawImage *raw_image = NULL;
+    int i = 0;
 
     if (argc < 3) {
         return -1;
@@ -80,8 +81,8 @@ main(int argc, char **argv)
     /* srand(time(NULL)); */
     srand(1);
 
-    main_triangles = random_triangles(MAX_TRIANGLES,
-                                      orig_img->w, orig_img->h);
+    main_triangles = init_triangles(MAX_TRIANGLES,
+                                    orig_img->w, orig_img->h);
     if (main_triangles == NULL) {
         return -1;
     }
@@ -119,6 +120,25 @@ main(int argc, char **argv)
             rate_image(orig_img, img));
 
     delay(atoi(argv[2]));
+
+    for (i = 0; i < 20000; i++) {
+        mutate_triangles(main_triangles);
+
+        rasterize_triangles(main_triangles, img);
+
+        if (update_texture_image(img)) {
+            return -1;
+        }
+
+        if (render_image(main_display, img, RECT_WORK)) {
+            return -1;
+        }
+
+        refresh_display(main_display);
+
+        fprintf(stderr, "Difference between images: %g\n",
+                rate_image(orig_img, img));
+    }
 
     return 0;
 }
