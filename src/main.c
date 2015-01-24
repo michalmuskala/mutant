@@ -23,7 +23,6 @@ free_img()
     free_image(img);
 }
 
-
 static void
 free_main_display()
 {

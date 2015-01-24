@@ -98,7 +98,6 @@ void
 free_display(DISPLAY *display)
 {
     if (display == NULL) {
-        SDL_Quit();
         return;
     }
 
@@ -110,11 +109,26 @@ free_display(DISPLAY *display)
         SDL_DestroyRenderer(display->renderer);
     }
 
-    free(display->orig_rect);
-    free(display->work_rect);
-    free(display->orig_name_rect);
-    free(display->work_name_rect);
-    free(display->stats_rect);
+    if (display->orig_rect != NULL) {
+        free(display->orig_rect);
+    }
+
+    if (display->work_rect != NULL) {
+        free(display->work_rect);
+    }
+
+    if (display->orig_name_rect != NULL) {
+        free(display->orig_name_rect);
+    }
+
+    if (display->work_name_rect != NULL) {
+        free(display->work_name_rect);
+    }
+
+    if (display->stats_rect != NULL) {
+        free(display->stats_rect);
+    }
+
     free(display);
 }
 

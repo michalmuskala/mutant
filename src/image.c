@@ -25,6 +25,7 @@ RawImage *
 read_raw_image(char *file)
 {
     RawImage *read = NULL;
+    RawImage *converted = NULL;
 
     read = IMG_Load(file);
 
@@ -33,7 +34,17 @@ read_raw_image(char *file)
         return NULL;
     }
 
-    return read;
+    converted = SDL_ConvertSurfaceFormat(read, MUTANT_SDL_FORMAT, 0);
+
+    if (converted == NULL) {
+        fprintf(stderr, "Reading image: %s\n", IMG_GetError());
+        SDL_FreeSurface(read);
+        return NULL;
+    }
+
+    SDL_FreeSurface(read);
+
+    return converted;
 }
 
 int
