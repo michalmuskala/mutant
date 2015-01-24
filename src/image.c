@@ -106,7 +106,7 @@ rate_image(const IMAGE *original, const IMAGE *modified)
     org_pixel_end = original->buffer + original->w * original->h;
 
     for (org_pixel = original->buffer, mod_pixel = modified->buffer;
-         org_pixel <= org_pixel_end;
+         org_pixel < org_pixel_end;
          mod_pixel++, org_pixel++) {
         SDL_GetRGB(*org_pixel, original->format, &orgc.r, &orgc.g, &orgc.b);
         SDL_GetRGB(*mod_pixel, modified->format, &modc.r, &modc.g, &modc.b);
