@@ -4,6 +4,7 @@
 #include "display.h"
 #include "triangle_set.h"
 #include "options.h"
+#include "events.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -13,25 +14,25 @@ static Display *main_display = NULL;
 static TriangleSet *main_triangles = NULL;
 
 static void
-free_orig_img()
+free_orig_img(void)
 {
     free_image(orig_img);
 }
 
 static void
-free_img()
+free_img(void)
 {
     free_image(img);
 }
 
 static void
-free_main_display()
+free_main_display(void)
 {
     free_display(main_display);
 }
 
 static void
-free_main_triangles()
+free_main_triangles(void)
 {
     free_triangles(main_triangles);
 }
@@ -40,7 +41,6 @@ int
 main(int argc, char **argv)
 {
     RawImage *raw_image = NULL;
-    int i = 0;
 
     if (parse_options(argc, argv) == NULL) {
         return -1;
@@ -121,7 +121,7 @@ main(int argc, char **argv)
 
     delay(options->delay);
 
-    for (i = 0; i < 10000; i++) {
+    while (check_events()) {
         mutate_triangles(main_triangles);
 
         rasterize_triangles(main_triangles, img);
