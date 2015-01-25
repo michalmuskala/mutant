@@ -4,12 +4,6 @@
 #include "triangle.h"
 #include "image.h"
 
-#define ADDITION_CHANCE 10
-#define MUTATION_CHANCE 20
-#define DELETION_CHANCE 30
-
-#define CHECK_CHANCE(chance) (rand() % (chance) == 0)
-
 typedef struct TRAINGLES {
     int max_count;
     int count;

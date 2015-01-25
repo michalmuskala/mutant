@@ -3,6 +3,7 @@
 #include "image.h"
 #include "display.h"
 #include "triangles.h"
+#include "options.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -35,17 +36,16 @@ free_main_triangles()
     free_triangles(main_triangles);
 }
 
-#define MAX_TRIANGLES 50
-
 int
 main(int argc, char **argv)
 {
     RawImage *raw_image = NULL;
     int i = 0;
 
-    if (argc < 3) {
+    if (parse_options(argc, argv) == NULL) {
         return -1;
     }
+    atexit(free_options);
 
     if (init_display() || init_image()) {
         return -1;
@@ -53,7 +53,7 @@ main(int argc, char **argv)
     atexit(quit_image);
     atexit(quit_display);
 
-    raw_image = read_raw_image(argv[1]);
+    raw_image = read_raw_image(options->image);
     if (raw_image == NULL) {
         return -1;
     }
@@ -81,7 +81,7 @@ main(int argc, char **argv)
     /* srand(time(NULL)); */
     srand(1);
 
-    main_triangles = init_triangles(MAX_TRIANGLES,
+    main_triangles = init_triangles(options->max_triangles,
                                     orig_img->w, orig_img->h);
     if (main_triangles == NULL) {
         return -1;
@@ -119,9 +119,9 @@ main(int argc, char **argv)
     fprintf(stderr, "Difference between images: %g\n",
             rate_image(orig_img, img));
 
-    delay(atoi(argv[2]));
+    delay(options->delay);
 
-    for (i = 0; i < 20000; i++) {
+    for (i = 0; i < 1; i++) {
         mutate_triangles(main_triangles);
 
         rasterize_triangles(main_triangles, img);
