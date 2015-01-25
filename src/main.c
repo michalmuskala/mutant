@@ -2,15 +2,15 @@
 
 #include "image.h"
 #include "display.h"
-#include "triangles.h"
+#include "triangle_set.h"
 #include "options.h"
 #include <stdlib.h>
 #include <time.h>
 
-static IMAGE *orig_img = NULL;
-static IMAGE *img = NULL;
-static DISPLAY *main_display = NULL;
-static TRIANGLES *main_triangles = NULL;
+static Image *orig_img = NULL;
+static Image *img = NULL;
+static Display *main_display = NULL;
+static TriangleSet *main_triangles = NULL;
 
 static void
 free_orig_img()
@@ -121,7 +121,7 @@ main(int argc, char **argv)
 
     delay(options->delay);
 
-    for (i = 0; i < 1; i++) {
+    for (i = 0; i < 10000; i++) {
         mutate_triangles(main_triangles);
 
         rasterize_triangles(main_triangles, img);

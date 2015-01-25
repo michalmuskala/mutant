@@ -19,14 +19,14 @@
 
 #define delay SDL_Delay
 
-typedef struct DISPLAY {
+typedef struct {
     int width, height;
     SDL_Window *window;
     SDL_Renderer *renderer;
     SDL_Rect *orig_rect, *work_rect;
     SDL_Rect *orig_name_rect, *work_name_rect;
     SDL_Rect *stats_rect;
-} DISPLAY;
+} Display;
 
 typedef enum {
     RECT_ALL,
@@ -35,19 +35,19 @@ typedef enum {
     RECT_ORIG_NAME,
     RECT_WORK_NAME,
     RECT_STATS
-} DISPLAY_AREA;
+} DisplayArea;
 
 extern int init_display();
 extern void quit_display();
 
-extern DISPLAY *create_display(int, int);
-extern void free_display(DISPLAY *);
-extern void refresh_display(DISPLAY *);
-extern void clear_display(DISPLAY *);
+extern Display *create_display(int, int);
+extern void free_display(Display *);
+extern void refresh_display(Display *);
+extern void clear_display(Display *);
 
-extern IMAGE *convert_image(DISPLAY *, RawImage *);
-extern IMAGE * init_dynamic_image(DISPLAY *, const int, const int);
-extern int render_image(DISPLAY *, const IMAGE *, const DISPLAY_AREA);
-extern int write_on_rect(DISPLAY *, const DISPLAY_AREA, const char *);
+extern Image *convert_image(Display *, RawImage *);
+extern Image * init_dynamic_image(Display *, const int, const int);
+extern int render_image(Display *, const Image *, const DisplayArea);
+extern int write_on_rect(Display *, const DisplayArea, const char *);
 
 #endif /* MUTANT_DISPLAY_H_ */

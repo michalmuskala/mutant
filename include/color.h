@@ -3,13 +3,13 @@
 
 typedef unsigned char byte;
 
-typedef struct COLOR {
+typedef struct {
     byte r, g, b, a;
-} COLOR;
+} Color;
 
 #define COLOR_MAX 255
 
-extern COLOR make_color(const byte, const byte, const byte, const byte);
-extern double color_distance(const COLOR, const COLOR);
+extern Color make_color(const byte, const byte, const byte, const byte);
+extern double color_distance(const Color, const Color);
 
 #endif /* MUTANT_COLOR_H_ */

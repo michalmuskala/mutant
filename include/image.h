@@ -7,13 +7,13 @@
 /* Our default format, try to convert everything to it */
 #define MUTANT_SDL_FORMAT SDL_PIXELFORMAT_RGBA8888
 
-typedef struct IMAGE {
+typedef struct {
     int w, h, access;
     unsigned int iformat;
     unsigned int *buffer;
     SDL_PixelFormat *format;
     SDL_Texture *texture;
-} IMAGE;
+} Image;
 
 typedef SDL_Surface RawImage;
 
@@ -21,11 +21,11 @@ extern int init_image();
 extern void quit_image();
 
 extern RawImage *read_raw_image(char *);
-extern int update_texture_image(IMAGE *);
-extern void free_image(IMAGE *);
-extern double rate_image(const IMAGE *, const IMAGE *);
-extern void clear_image(IMAGE *);
+extern int update_texture_image(Image *);
+extern void free_image(Image *);
+extern double rate_image(const Image *, const Image *);
+extern void clear_image(Image *);
 
-extern void draw_hline(IMAGE *, const int, const int, const int, const COLOR *);
+extern void draw_hline(Image *, const int, const int, const int, const Color *);
 
 #endif /* MUTANT_IMAGE_H_ */

@@ -30,10 +30,10 @@ set_rect(SDL_Rect *rect, int x, int y, int w, int h)
     rect->h = h;
 }
 
-DISPLAY *
+Display *
 create_display(int image_width, int image_height)
 {
-    DISPLAY *display = NULL;
+    Display *display = NULL;
 
     /* We want null pointers */
     display = calloc(1, sizeof(*display));
@@ -96,7 +96,7 @@ create_display(int image_width, int image_height)
 }
 
 void
-free_display(DISPLAY *display)
+free_display(Display *display)
 {
     if (display == NULL) {
         return;
@@ -134,13 +134,13 @@ free_display(DISPLAY *display)
 }
 
 void
-refresh_display(DISPLAY *display)
+refresh_display(Display *display)
 {
     SDL_RenderPresent(display->renderer);
 }
 
 static SDL_Rect *
-rect_from_area(const DISPLAY *display, const DISPLAY_AREA area)
+rect_from_area(const Display *display, const DisplayArea area)
 {
     switch (area) {
     case RECT_ALL:       return NULL;
@@ -153,10 +153,10 @@ rect_from_area(const DISPLAY *display, const DISPLAY_AREA area)
     }
 }
 
-IMAGE *
-convert_image(DISPLAY *display, RawImage *raw)
+Image *
+convert_image(Display *display, RawImage *raw)
 {
-    IMAGE *i = NULL;
+    Image *i = NULL;
     int row = 0;
     unsigned int *dst = NULL, *src = NULL;
 
@@ -221,10 +221,10 @@ convert_image(DISPLAY *display, RawImage *raw)
     return i;
 }
 
-IMAGE *
-init_dynamic_image(DISPLAY *display, const int w, const int h)
+Image *
+init_dynamic_image(Display *display, const int w, const int h)
 {
-    IMAGE *i = NULL;
+    Image *i = NULL;
     int buffer_len = 0;
 
     /* Set to zero to have NULL pointers */
@@ -272,7 +272,7 @@ init_dynamic_image(DISPLAY *display, const int w, const int h)
 
 
 int
-render_image(DISPLAY *display, const IMAGE *image, const DISPLAY_AREA area)
+render_image(Display *display, const Image *image, const DisplayArea area)
 {
     SDL_Rect *rect = NULL;
 
@@ -291,7 +291,7 @@ render_image(DISPLAY *display, const IMAGE *image, const DISPLAY_AREA area)
 }
 
 void
-clear_display(DISPLAY *display)
+clear_display(Display *display)
 {
     if (display == NULL) {
         return;

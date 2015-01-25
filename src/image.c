@@ -48,7 +48,7 @@ read_raw_image(char *file)
 }
 
 int
-update_texture_image(IMAGE *i)
+update_texture_image(Image *i)
 {
     unsigned int *dst = NULL, *src = NULL;
     int pitch = 0;
@@ -73,7 +73,7 @@ update_texture_image(IMAGE *i)
 }
 
 void
-free_image(IMAGE *image)
+free_image(Image *image)
 {
     if (image == NULL) {
         return;
@@ -96,11 +96,11 @@ free_image(IMAGE *image)
 
 
 double
-rate_image(const IMAGE *original, const IMAGE *modified)
+rate_image(const Image *original, const Image *modified)
 {
     unsigned int *org_pixel = NULL, *org_pixel_end = NULL;
     unsigned int *mod_pixel = NULL;
-    COLOR orgc = {0}, modc = {0};
+    Color orgc = {0}, modc = {0};
     double rate = 0;
 
     org_pixel_end = original->buffer + original->w * original->h;
@@ -118,7 +118,7 @@ rate_image(const IMAGE *original, const IMAGE *modified)
 }
 
 void
-clear_image(IMAGE *image)
+clear_image(Image *image)
 {
     unsigned int color = 0;
     int i = 0;
@@ -131,8 +131,8 @@ clear_image(IMAGE *image)
 }
 
 void
-draw_hline(IMAGE *image, const int y, const int x1, const int x2,
-           const COLOR *color)
+draw_hline(Image *image, const int y, const int x1, const int x2,
+           const Color *color)
 {
     byte r = 0, g = 0, b = 0, a = 0;
     byte ar = 0, ag = 0, ab = 0;

@@ -2,10 +2,10 @@
 
 #include <math.h>
 
-COLOR
+Color
 make_color(const byte r, const byte g, const byte b, const byte a)
 {
-    COLOR color = {0};
+    Color color = {0};
 
     color.r = r;
     color.g = g;
@@ -17,7 +17,7 @@ make_color(const byte r, const byte g, const byte b, const byte a)
 
 /* TODO: some better metric, maybe deltaE in the CIELab colorspace? */
 double
-color_distance(const COLOR x, const COLOR y)
+color_distance(const Color x, const Color y)
 {
     int dr = 0, dg = 0, db = 0;
 

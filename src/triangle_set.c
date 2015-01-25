@@ -1,28 +1,28 @@
-#include "triangles.h"
+#include "triangle_set.h"
 
 #include "options.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
 
-TRIANGLES *
+TriangleSet *
 init_triangles(int count, int max_w, int max_h)
 {
-    TRIANGLES *triangles = NULL;
+    TriangleSet *triangles = NULL;
 
     if (count <= 0) {
         fprintf(stderr, "Triangles count must be positive\n");
         return NULL;
     }
 
-    triangles = malloc(sizeof(TRIANGLES));
+    triangles = malloc(sizeof(*triangles));
 
     if (triangles == NULL) {
         perror("Initializing triangles");
         return NULL;
     }
 
-    triangles->triangles = calloc(sizeof(TRIANGLE), count);
+    triangles->triangles = calloc(sizeof(*triangles->triangles), count);
 
     if (triangles->triangles == NULL) {
         free_triangles(triangles);
@@ -43,7 +43,7 @@ init_triangles(int count, int max_w, int max_h)
 }
 
 void
-free_triangles(TRIANGLES *triangles)
+free_triangles(TriangleSet *triangles)
 {
     if (triangles == NULL) {
         return;
@@ -56,10 +56,10 @@ free_triangles(TRIANGLES *triangles)
     free(triangles);
 }
 
-TRIANGLES *
+TriangleSet *
 random_triangles(int count, int max_w, int max_h)
 {
-    TRIANGLES *triangles = NULL;
+    TriangleSet *triangles = NULL;
 
     triangles = init_triangles(count, max_w, max_h);
 
@@ -78,7 +78,7 @@ random_triangles(int count, int max_w, int max_h)
 }
 
 void
-rasterize_triangles(TRIANGLES *triangles, IMAGE *image)
+rasterize_triangles(TriangleSet *triangles, Image *image)
 {
     int i = 0;
 
@@ -91,14 +91,14 @@ rasterize_triangles(TRIANGLES *triangles, IMAGE *image)
 }
 
 static void
-add_triangle_to_triangles(TRIANGLES *t)
+add_triangle_to_triangles(TriangleSet *t)
 {
     randomize_triangle(&t->triangles[t->count], t->max_w, t->max_h);
     t->count++;
 }
 
 static void
-delete_triangle_from_triangles(TRIANGLES *t)
+delete_triangle_from_triangles(TriangleSet *t)
 {
     int deli = 0;
 
@@ -118,7 +118,7 @@ delete_triangle_from_triangles(TRIANGLES *t)
 #define CHECK_CHANCE(chance) (rand() % (chance) == 0)
 
 void
-mutate_triangles(TRIANGLES *t)
+mutate_triangles(TriangleSet *t)
 {
     int i = 0;
 

@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 void
-randomize_triangle(TRIANGLE *triangle, const int max_w, const int max_h)
+randomize_triangle(Triangle *triangle, const int max_w, const int max_h)
 {
     triangle->v1.x = rand() % max_w;
     triangle->v2.x = rand() % max_w;
@@ -21,10 +21,10 @@ randomize_triangle(TRIANGLE *triangle, const int max_w, const int max_h)
 }
 
 void
-log_triangle(const TRIANGLE *triangle)
+log_triangle(const Triangle *triangle)
 {
     fprintf(stderr,
-            "TRIANGLE: A = (%4d,%4d) B = (%4d,%4d) C = (%4d,%4d)"
+            "Triangle: A = (%4d,%4d) B = (%4d,%4d) C = (%4d,%4d)"
             " r=%3d g=%3d b=%3d a=%3d\n",
             triangle->v1.x, triangle->v1.y,
             triangle->v2.x, triangle->v2.y,
@@ -34,15 +34,15 @@ log_triangle(const TRIANGLE *triangle)
 }
 
 static void
-swap_vertices(VERTICE *a, VERTICE *b)
+swap_vertices(Vertice *a, Vertice *b)
 {
-    VERTICE tmp = *a;
+    Vertice tmp = *a;
     *a = *b;
     *b = tmp;
 }
 
 void
-normalize_triangle(TRIANGLE *t)
+normalize_triangle(Triangle *t)
 {
     if (t->v1.y > t->v3.y) {
         swap_vertices(&t->v1, &t->v3);
@@ -58,8 +58,8 @@ normalize_triangle(TRIANGLE *t)
 }
 
 static void
-rasterize_top_triangle(const VERTICE *v1, const VERTICE *v2, const VERTICE *v3,
-                       const COLOR *color, IMAGE *image)
+rasterize_top_triangle(const Vertice *v1, const Vertice *v2, const Vertice *v3,
+                       const Color *color, Image *image)
 {
     /* invslope = 1 / slope = dx / dy */
     double invslope1 = 0, invslope2 = 0;
@@ -77,8 +77,8 @@ rasterize_top_triangle(const VERTICE *v1, const VERTICE *v2, const VERTICE *v3,
 }
 
 static void
-rasterize_bottom_triangle(const VERTICE *v1, const VERTICE *v2,
-                          const VERTICE *v3, const COLOR *color, IMAGE *image)
+rasterize_bottom_triangle(const Vertice *v1, const Vertice *v2,
+                          const Vertice *v3, const Color *color, Image *image)
 {
     /* invslope = 1 / slope = dx / dy */
     double invslope1 = 0, invslope2 = 0;
@@ -96,9 +96,9 @@ rasterize_bottom_triangle(const VERTICE *v1, const VERTICE *v2,
 }
 
 void
-rasterize_triangle(const TRIANGLE *t, IMAGE *image)
+rasterize_triangle(const Triangle *t, Image *image)
 {
-    VERTICE middle = {0, 0};
+    Vertice middle = {0, 0};
 
     if (t->v2.y == t->v3.y) {
         rasterize_bottom_triangle(&t->v1, &t->v2, &t->v3, &t->color, image);
@@ -117,7 +117,7 @@ rasterize_triangle(const TRIANGLE *t, IMAGE *image)
 }
 
 void
-mutate_triangle(TRIANGLE *triangle, const int max_w, const int max_h)
+mutate_triangle(Triangle *triangle, const int max_w, const int max_h)
 {
     (void) triangle;
     (void) max_w;

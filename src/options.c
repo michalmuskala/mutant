@@ -88,6 +88,7 @@ getopt(int argc, char **argv, char *optstring)
 
 #endif /* __GNUC__ */
 
+/* Arguments defaults */
 #define MAX_TRIANGLES 50
 #define ADDITION_CHANCE 10
 #define MUTATION_CHANCE 20
@@ -95,6 +96,7 @@ getopt(int argc, char **argv, char *optstring)
 #define SWAP_CHANCE 40
 #define DELAY 1000
 
+/* Easy printing */
 #define TOS(val) _TOS(val)
 #define _TOS(val) #val
 
