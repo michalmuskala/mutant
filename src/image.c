@@ -1,5 +1,7 @@
 #include "image.h"
 
+#include <stdlib.h>
+
 int
 init_image()
 {
@@ -12,6 +14,8 @@ init_image()
         return -1;
     }
 
+    atexit(quit_image);
+
     return 0;
 }
 
@@ -21,30 +25,24 @@ quit_image()
     IMG_Quit();
 }
 
-RawImage *
-read_raw_image(char *file)
+int
+get_image_dimensions(char *file, int *w, int *h)
 {
-    RawImage *read = NULL;
-    RawImage *converted = NULL;
+    SDL_Surface *surface;
 
-    read = IMG_Load(file);
+    surface = IMG_Load(file);
 
-    if (read == NULL) {
+    if (surface == NULL) {
         fprintf(stderr, "Reading image: %s\n", IMG_GetError());
-        return NULL;
+        return -1;
     }
 
-    converted = SDL_ConvertSurfaceFormat(read, MUTANT_SDL_FORMAT, 0);
+    *w = surface->w;
+    *h = surface->h;
 
-    if (converted == NULL) {
-        fprintf(stderr, "Reading image: %s\n", IMG_GetError());
-        SDL_FreeSurface(read);
-        return NULL;
-    }
+    SDL_FreeSurface(surface);
 
-    SDL_FreeSurface(read);
-
-    return converted;
+    return 0;
 }
 
 int

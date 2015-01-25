@@ -37,17 +37,10 @@ typedef enum {
     RECT_STATS
 } DisplayArea;
 
-extern int init_display();
-extern void quit_display();
+extern int init_display(int, int);
 
-extern Display *create_display(int, int);
-extern void free_display(Display *);
-extern void refresh_display(Display *);
-extern void clear_display(Display *);
-
-extern Image *convert_image(Display *, RawImage *);
-extern Image * init_dynamic_image(Display *, const int, const int);
-extern int render_image(Display *, const Image *, const DisplayArea);
-extern int write_on_rect(Display *, const DisplayArea, const char *);
+extern Image *init_static_image(char *);
+extern Image *init_dynamic_image(const int, const int);
+extern int render_image(const Image *, const DisplayArea);
 
 #endif /* MUTANT_DISPLAY_H_ */

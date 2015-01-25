@@ -154,12 +154,12 @@ parse_options(int argc, char **argv)
 
     /* default values */
     options->image = NULL;
-    options->max_triangles = 50;
-    options->addition_chance = 10;
-    options->mutation_chance = 20;
-    options->deletion_chance = 30;
-    options->swap_chance = 40;
-    options->delay = 1000;
+    options->max_triangles = MAX_TRIANGLES;
+    options->addition_chance = ADDITION_CHANCE;
+    options->mutation_chance = MUTATION_CHANCE;
+    options->deletion_chance = DELETION_CHANCE;
+    options->swap_chance = SWAP_CHANCE;
+    options->delay = DELAY;
 
     while((c = getopt(argc, argv, opts)) != -1) {
         switch (c) {
@@ -215,6 +215,8 @@ parse_options(int argc, char **argv)
         usage(argv[0]);
         return NULL;
     }
+
+    atexit(free_options);
 
     return options;
 }

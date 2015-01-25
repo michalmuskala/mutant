@@ -15,12 +15,10 @@ typedef struct {
     SDL_Texture *texture;
 } Image;
 
-typedef SDL_Surface RawImage;
-
 extern int init_image();
 extern void quit_image();
 
-extern RawImage *read_raw_image(char *);
+extern int get_image_dimensions(char *, int *, int *);
 extern int update_texture_image(Image *);
 extern void free_image(Image *);
 extern double rate_image(const Image *, const Image *);

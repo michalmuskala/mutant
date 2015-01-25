@@ -10,7 +10,6 @@
 
 static Image *orig_img = NULL;
 static Image *img = NULL;
-static Display *main_display = NULL;
 static TriangleSet *main_triangles = NULL;
 
 static void
@@ -26,12 +25,6 @@ free_img(void)
 }
 
 static void
-free_main_display(void)
-{
-    free_display(main_display);
-}
-
-static void
 free_main_triangles(void)
 {
     free_triangles(main_triangles);
@@ -40,42 +33,34 @@ free_main_triangles(void)
 int
 main(int argc, char **argv)
 {
-    RawImage *raw_image = NULL;
+    int w, h;
 
     if (parse_options(argc, argv) == NULL) {
         return -1;
     }
-    atexit(free_options);
 
-    if (init_display() || init_image()) {
-        return -1;
-    }
-    atexit(quit_image);
-    atexit(quit_display);
-
-    raw_image = read_raw_image(options->image);
-    if (raw_image == NULL) {
+    if (init_image()) {
         return -1;
     }
 
-    main_display = create_display(raw_image->w, raw_image->h);
-    if (main_display == NULL) {
+    /* init_display relies on dimensions being available */
+    if (get_image_dimensions(options->image, &w, &h)) {
         return -1;
     }
-    atexit(free_main_display);
 
-    orig_img = convert_image(main_display, raw_image);
+    if (init_display(w, h)) {
+        return -1;
+    }
+
+    orig_img = init_static_image(options->image);
     if (orig_img == NULL) {
         return -1;
     }
     atexit(free_orig_img);
 
-    clear_display(main_display);
-
-    if (render_image(main_display, orig_img, RECT_ORIG)) {
+    if (render_image(orig_img, RECT_ORIG)) {
         return -1;
     }
-    refresh_display(main_display);
 
     /* Keep things consistient across runs for the time being */
     /* srand(time(NULL)); */
@@ -88,21 +73,11 @@ main(int argc, char **argv)
     }
     atexit(free_main_triangles);
 
-    img = init_dynamic_image(main_display, orig_img->w, orig_img->h);
+    img = init_dynamic_image(orig_img->w, orig_img->h);
     if (img == NULL) {
         return -1;
     }
     atexit(free_img);
-
-    if (update_texture_image(img)) {
-        return -1;
-    }
-
-    if (render_image(main_display, img, RECT_WORK)) {
-        return -1;
-    }
-
-    refresh_display(main_display);
 
     rasterize_triangles(main_triangles, img);
 
@@ -110,11 +85,9 @@ main(int argc, char **argv)
         return -1;
     }
 
-    if (render_image(main_display, img, RECT_WORK)) {
+    if (render_image(img, RECT_WORK)) {
         return -1;
     }
-
-    refresh_display(main_display);
 
     fprintf(stderr, "Difference between images: %g\n",
             rate_image(orig_img, img));
@@ -130,11 +103,9 @@ main(int argc, char **argv)
             return -1;
         }
 
-        if (render_image(main_display, img, RECT_WORK)) {
+        if (render_image(img, RECT_WORK)) {
             return -1;
         }
-
-        refresh_display(main_display);
 
         fprintf(stderr, "Difference between images: %g\n",
                 rate_image(orig_img, img));
