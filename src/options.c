@@ -90,11 +90,12 @@ getopt(int argc, char **argv, char *optstring)
 
 /* Arguments defaults */
 #define MAX_TRIANGLES 50
-#define ADDITION_CHANCE 10
 #define MUTATION_CHANCE 20
+#define ADDITION_CHANCE 10
 #define DELETION_CHANCE 30
 #define SWAP_CHANCE 40
-#define DELAY 1000
+#define TEMP_STEP 0.0001
+#define NOSEED 0
 
 /* Easy printing */
 #define TOS(val) _TOS(val)
@@ -113,12 +114,13 @@ usage(const char *name)
     fprintf(stderr, "\n");
     print_option("Option", "Default", "Description");
     print_option("-f", "(required)", "image to process");
-    print_option("-m", TOS(MAX_TRIANGLES), "max number of triangles to use");
-    print_option("-a", TOS(ADDITION_CHANCE), "triangle addition chance");
+    print_option("-n", TOS(MAX_TRIANGLES), "max number of triangles to use");
     print_option("-m", TOS(MUTATION_CHANCE), "triangle mutation chance");
+    print_option("-a", TOS(ADDITION_CHANCE), "triangle addition chance");
     print_option("-d", TOS(DELETION_CHANCE), "triangle deletion chance");
     print_option("-s", TOS(SWAP_CHANCE), "triangles swap chance");
-    print_option("-t", TOS(DELAY), "delay before quitting in ms");
+    print_option("-t", TOS(TEMP_STEP), "iteration temperature step");
+    print_option("-r", "false", "skip random generator seeding");
     fprintf(stderr, "All chances are expressed as 1 in value provided\n");
 }
 
@@ -137,8 +139,8 @@ Options *
 parse_options(int argc, char **argv)
 {
     int c = 0;
-    char *opts = "hvf:n:a:m:d:s:t:";
-    char *argopts = "fnamdst";
+    char *opts = "hvrf:n:m:a:d:s:t:";
+    char *argopts = "fnmadst";
 
     if (options != NULL) {
         fprintf(stderr, "Overriding options\n");
@@ -159,7 +161,7 @@ parse_options(int argc, char **argv)
     options->mutation_chance = MUTATION_CHANCE;
     options->deletion_chance = DELETION_CHANCE;
     options->swap_chance = SWAP_CHANCE;
-    options->delay = DELAY;
+    options->temp_step = TEMP_STEP;
 
     while((c = getopt(argc, argv, opts)) != -1) {
         switch (c) {
@@ -182,7 +184,10 @@ parse_options(int argc, char **argv)
             options->swap_chance = atoi(optarg);
             break;
         case 't':
-            options->delay = atoi(optarg);
+            options->temp_step = atof(optarg);
+            break;
+        case 'r':
+            options->noseed = 1;
             break;
         case 'h':
             usage(argv[0]);

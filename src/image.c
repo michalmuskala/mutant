@@ -92,7 +92,6 @@ free_image(Image *image)
     free(image);
 }
 
-
 double
 rate_image(const Image *original, const Image *modified)
 {
@@ -112,7 +111,7 @@ rate_image(const Image *original, const Image *modified)
         rate += color_distance(orgc, modc);
     }
 
-    return rate;
+    return rate / (original->w * original->h);
 }
 
 void

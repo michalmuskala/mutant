@@ -60,7 +60,7 @@ free_display(void)
 }
 
 static void
-set_rect(SDL_Rect *rect, int x, int y, int w, int h)
+set_rect(SDL_Rect *rect, const int x, const int y, const int w, const int h)
 {
     rect->x = x;
     rect->y = y;
@@ -69,7 +69,7 @@ set_rect(SDL_Rect *rect, int x, int y, int w, int h)
 }
 
 static Display *
-create_display(int w, int h)
+create_display(const int w, const int h)
 {
     Display *display = NULL;
 
@@ -128,7 +128,7 @@ create_display(int w, int h)
 }
 
 int
-init_display(int w, int h)
+init_display(const int w, const int h)
 {
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {
         fprintf(stderr, "Initializing display: %s\n", SDL_GetError());
@@ -163,7 +163,7 @@ rect_from_area(const Display *display, const DisplayArea area)
 }
 
 Image *
-init_static_image(char *name)
+init_static_image(const char *name)
 {
     SDL_Surface *surface = NULL, *raw = NULL;
     Image *i = NULL;

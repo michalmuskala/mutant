@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void
-randomize_triangle(Triangle *triangle, const int max_w, const int max_h)
+static void
+randomize_vertices(Triangle *triangle, const int max_w, const int max_h)
 {
     triangle->v1.x = rand() % max_w;
     triangle->v2.x = rand() % max_w;
@@ -13,11 +13,28 @@ randomize_triangle(Triangle *triangle, const int max_w, const int max_h)
     triangle->v1.y = rand() % max_h;
     triangle->v2.y = rand() % max_h;
     triangle->v3.y = rand() % max_h;
+}
 
+static void
+randomize_color(Triangle *triangle)
+{
     triangle->color.r = rand() % COLOR_MAX;
     triangle->color.g = rand() % COLOR_MAX;
     triangle->color.b = rand() % COLOR_MAX;
+}
+
+static void
+randomize_alpha(Triangle *triangle)
+{
     triangle->color.a = rand() % COLOR_MAX;
+}
+
+void
+randomize_triangle(Triangle *triangle, const int max_w, const int max_h)
+{
+    randomize_vertices(triangle, max_w, max_h);
+    randomize_color(triangle);
+    randomize_alpha(triangle);
 }
 
 void
@@ -116,10 +133,36 @@ rasterize_triangle(const Triangle *t, Image *image)
     }
 }
 
+enum choice {
+    RANDOMIZE_POSITION = 0,
+    MUTATE_POSITION,
+    RANDOMIZE_COLOR,
+    MUTATE_COLOR,
+    RANDOMIZE_ALPHA,
+    MUTATE_ALPHA,
+    CHOICES_COUNT
+};
+
 void
 mutate_triangle(Triangle *triangle, const int max_w, const int max_h)
 {
-    (void) triangle;
-    (void) max_w;
-    (void) max_h;
+    switch(rand() % CHOICES_COUNT) {
+    case RANDOMIZE_POSITION:
+        randomize_vertices(triangle, max_w, max_h);
+        break;
+    case MUTATE_POSITION:
+        break;
+    case RANDOMIZE_COLOR:
+        randomize_color(triangle);
+        break;
+    case MUTATE_COLOR:
+        break;
+    case RANDOMIZE_ALPHA:
+        randomize_alpha(triangle);
+        break;
+    case MUTATE_ALPHA:
+        break;
+    default:
+        abort();
+    }
 }

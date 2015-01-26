@@ -11,10 +11,10 @@ typedef struct {
     Triangle *triangles;
 } TriangleSet;
 
-extern TriangleSet *init_triangles(int, int, int);
+extern TriangleSet *init_triangles(int, int);
 extern void free_triangles(TriangleSet *);
 
-extern TriangleSet *random_triangles(int, int, int);
+extern void copy_triangles(TriangleSet *, const TriangleSet *);
 extern void rasterize_triangles(TriangleSet *, Image *);
 extern void mutate_triangles(TriangleSet *);
 

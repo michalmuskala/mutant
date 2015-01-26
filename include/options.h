@@ -8,7 +8,8 @@ typedef struct {
     int mutation_chance;
     int deletion_chance;
     int swap_chance;
-    int delay;
+    int noseed;
+    double temp_step;
 } Options;
 
 /* Default options storage */

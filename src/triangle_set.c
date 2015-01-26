@@ -6,14 +6,9 @@
 #include <memory.h>
 
 TriangleSet *
-init_triangles(int count, int max_w, int max_h)
+init_triangles(int max_w, int max_h)
 {
     TriangleSet *triangles = NULL;
-
-    if (count <= 0) {
-        fprintf(stderr, "Triangles count must be positive\n");
-        return NULL;
-    }
 
     triangles = malloc(sizeof(*triangles));
 
@@ -22,14 +17,16 @@ init_triangles(int count, int max_w, int max_h)
         return NULL;
     }
 
-    triangles->triangles = calloc(sizeof(*triangles->triangles), count);
+    triangles->max_count = options->max_triangles;
+    triangles->triangles = calloc(triangles->max_count,
+                                  sizeof(*triangles->triangles));
 
     if (triangles->triangles == NULL) {
+        perror("Initializing triangles");
         free_triangles(triangles);
         return NULL;
     }
 
-    triangles->max_count = count;
     triangles->count = 0;
     triangles->max_w = max_w;
     triangles->max_h = max_h;
@@ -43,6 +40,18 @@ init_triangles(int count, int max_w, int max_h)
 }
 
 void
+copy_triangles(TriangleSet *new, const TriangleSet *old)
+{
+    new->count = old->count;
+    new->max_w = old->max_w;
+    new->max_h = old->max_h;
+
+    memcpy(new->triangles, old->triangles,
+           new->count * sizeof(*new->triangles));
+}
+
+
+void
 free_triangles(TriangleSet *triangles)
 {
     if (triangles == NULL) {
@@ -54,27 +63,6 @@ free_triangles(TriangleSet *triangles)
     }
 
     free(triangles);
-}
-
-TriangleSet *
-random_triangles(int count, int max_w, int max_h)
-{
-    TriangleSet *triangles = NULL;
-
-    triangles = init_triangles(count, max_w, max_h);
-
-    if (triangles == NULL) {
-        return NULL;
-    }
-
-    for (triangles->count = 0;
-         triangles->count < triangles->max_count;
-         triangles->count++) {
-        randomize_triangle(&triangles->triangles[triangles->count],
-                           triangles->max_w, triangles->max_h);
-    }
-
-    return triangles;
 }
 
 void
