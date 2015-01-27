@@ -16,6 +16,8 @@ init_annealing(Image *original)
         return NULL;
     }
 
+    state->original = original;
+
     state->image = init_dynamic_image(original->w, original->h);
     state->current.triangles = init_triangles(original->w, original->h);
     state->best.triangles = init_triangles(original->w, original->h);
@@ -27,9 +29,11 @@ init_annealing(Image *original)
         return NULL;
     }
 
-    state->best.rate = 0;
+    state->best.rate = rate_image(state->original, state->image);
+    if (state->best.rate != state->best.rate) {
+        exit(1);
+    }
     state->current.rate = 0;
-    state->original = original;
     state->generation = 0;
     state->temperature = 1;
 
@@ -39,21 +43,15 @@ init_annealing(Image *original)
 static int
 is_acceptable(const double best, const double current, const double temp)
 {
-    double rate = 0;
-
-    /*
-     * Optimize by exiting early if new is better then old.
-     * Calculation would do just that, but why bother with exp and rand
-     */
     if (current < best) {
         return 1;
     }
-
-    rate = exp((current - best) / temp);
-
-    printf("Switch chance: %f\n", rate);
-
-    return rate > (((double) rand()) / RAND_MAX);
+    else if (temp > 0) {
+        return exp((current - best) / temp) < ((double) rand() / RAND_MAX);
+    }
+    else {
+        return 0;
+    }
 }
 
 void
@@ -64,8 +62,9 @@ step_annealing(Annealing *state)
     state->current.rate = rate_image(state->original, state->image);
 
     state->generation++;
-    if (state->temperature > 0) {
-        state->temperature -= options->temp_step;
+    state->temperature -= options->temp_step;
+    if (state->temperature < 0) {
+        state->temperature = 0;
     }
 
     printf("Generation #%03ld (T: %f) %g \n",
@@ -74,7 +73,6 @@ step_annealing(Annealing *state)
     if (is_acceptable(state->best.rate, state->current.rate,
                       state->temperature)) {
         /* Make current triangles our best */
-        /* printf("New! %g replaces %g\n", state->current.) */
         copy_triangles(state->best.triangles, state->current.triangles);
         state->best.rate = state->current.rate;
     }

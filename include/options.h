@@ -5,11 +5,12 @@ typedef struct {
     char *image;
     int max_triangles;
     int addition_chance;
-    int mutation_chance;
     int deletion_chance;
+    int mutation_chance;
     int swap_chance;
     int noseed;
     double temp_step;
+    char bgr, bgg, bgb;
 } Options;
 
 /* Default options storage */

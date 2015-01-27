@@ -1,6 +1,7 @@
 #include "image.h"
 
 #include <stdlib.h>
+#include "options.h"
 
 int
 init_image()
@@ -111,7 +112,10 @@ rate_image(const Image *original, const Image *modified)
         rate += color_distance(orgc, modc);
     }
 
-    return rate / (original->w * original->h);
+    if (rate != rate) {
+        printf("HERE!!!!\n");
+    }
+    return rate / (original->w * original->h) * 100;
 }
 
 void
@@ -120,7 +124,11 @@ clear_image(Image *image)
     unsigned int color = 0;
     int i = 0;
 
-    color = SDL_MapRGBA(image->format, 0, 0, 0, COLOR_MAX);
+    color = SDL_MapRGBA(image->format,
+                        options->bgr,
+                        options->bgg,
+                        options->bgb,
+                        COLOR_MAX);
 
     for (i = 0; i < image->w * image->h; i++) {
         image->buffer[i] = color;
@@ -144,9 +152,9 @@ draw_hline(Image *image, const int y, const int x1, const int x2,
     ab = color->b * alpha;
 
     pixel = image->buffer + image->w * y + x1;
-    pixel_end = pixel + (x2 - x1);
+    pixel_end = image->buffer + image->w * y + x2;
 
-    for (; pixel <= pixel_end; pixel++) {
+    for (; pixel < pixel_end; pixel++) {
         SDL_GetRGBA(*pixel, image->format, &r, &g, &b, &a);
 
         alpha_src = (double) a / COLOR_MAX;

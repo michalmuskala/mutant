@@ -42,18 +42,6 @@ free_display(void)
         free(display->work_rect);
     }
 
-    if (display->orig_name_rect != NULL) {
-        free(display->orig_name_rect);
-    }
-
-    if (display->work_name_rect != NULL) {
-        free(display->work_name_rect);
-    }
-
-    if (display->stats_rect != NULL) {
-        free(display->stats_rect);
-    }
-
     free(display);
 
     SDL_Quit();
@@ -83,38 +71,19 @@ create_display(const int w, const int h)
 
     display->orig_rect = malloc(sizeof(SDL_Rect));
     display->work_rect = malloc(sizeof(SDL_Rect));
-    display->orig_name_rect = malloc(sizeof(SDL_Rect));
-    display->work_name_rect = malloc(sizeof(SDL_Rect));
-    display->stats_rect = malloc(sizeof(SDL_Rect));
 
     if ((display->orig_rect == NULL) ||
-        (display->work_rect == NULL) ||
-        (display->orig_name_rect == NULL) ||
-        (display->work_name_rect == NULL) ||
-        (display->stats_rect == NULL)) {
+        (display->work_rect == NULL)) {
         perror("Initializing display");
         free_display();
         return NULL;
     }
 
-    display->width = 2 * w + 2 * BORDER_WIDTH + STATS_WIDTH;
-    display->height = h + IMAGE_NAME_HEIGHT + BORDER_WIDTH;
+    display->width = 2 * w + BORDER_WIDTH;
+    display->height = h;
 
-    set_rect(display->orig_rect,
-             0, IMAGE_NAME_HEIGHT + 2 * BORDER_WIDTH,
-             w, h);
-    set_rect(display->work_rect,
-             w + BORDER_WIDTH, IMAGE_NAME_HEIGHT + 2 * BORDER_WIDTH,
-             w, h);
-    set_rect(display->orig_name_rect,
-             BORDER_WIDTH, BORDER_WIDTH,
-             w - 2 * BORDER_WIDTH, IMAGE_NAME_HEIGHT);
-    set_rect(display->work_name_rect,
-             w + 3 * BORDER_WIDTH, BORDER_WIDTH,
-             w - 2 * BORDER_WIDTH, IMAGE_NAME_HEIGHT);
-    set_rect(display->stats_rect,
-             w * 2 + BORDER_WIDTH * 2, BORDER_WIDTH,
-             STATS_WIDTH, display->height - 2 * BORDER_WIDTH);
+    set_rect(display->orig_rect, 0, 0, w, h);
+    set_rect(display->work_rect, w + BORDER_WIDTH, 0, w, h);
 
     if (SDL_CreateWindowAndRenderer(display->width, display->height,
                                     SDL_WINDOW_SHOWN,
@@ -152,13 +121,9 @@ static SDL_Rect *
 rect_from_area(const Display *display, const DisplayArea area)
 {
     switch (area) {
-    case RECT_ALL:       return NULL;
     case RECT_ORIG:      return display->orig_rect;
     case RECT_WORK:      return display->work_rect;
-    case RECT_ORIG_NAME: return display->orig_name_rect;
-    case RECT_WORK_NAME: return display->work_name_rect;
-    case RECT_STATS:     return display->stats_rect;
-    default:             return NULL;
+    default:             abort();
     }
 }
 
@@ -233,13 +198,13 @@ init_static_image(const char *name)
         SDL_LockSurface(surface);
     }
 
-    src = raw->pixels;
+    src = surface->pixels;
     dst = i->buffer;
 
-    for (row = 0; row < raw->h; row++) {
-        memcpy(dst, src, raw->w * sizeof(*src));
-        dst += raw->w;
-        src += raw->pitch / sizeof(*src);
+    for (row = 0; row < i->h; row++) {
+        memcpy(dst, src, i->w * sizeof(*src));
+        dst += i->w;
+        src += surface->pitch / sizeof(*src);
     }
 
     SDL_UnlockSurface(surface);

@@ -108,24 +108,15 @@ delete_triangle_from_triangles(TriangleSet *t)
 void
 mutate_triangles(TriangleSet *t)
 {
-    int i = 0;
-
     if (t->count < t->max_count && CHECK_CHANCE(options->addition_chance)) {
-        fprintf(stderr, "Adding triangle\n");
         add_triangle_to_triangles(t);
         return;
     }
 
     if (t->count > 0 && CHECK_CHANCE(options->deletion_chance)) {
-        fprintf(stderr, "Deleting triangle\n");
         delete_triangle_from_triangles(t);
         return;
     }
 
-    for (i = 0; i < t->count; i++) {
-        if (CHECK_CHANCE(options->mutation_chance)) {
-            fprintf(stderr, "Mutating triangle#%d\n", i);
-            mutate_triangle(&t->triangles[i], t->max_w, t->max_h);
-        }
-    }
+    mutate_triangle(&t->triangles[rand() % t->count], t->max_w, t->max_h);
 }

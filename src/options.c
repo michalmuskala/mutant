@@ -93,6 +93,9 @@ getopt(int argc, char **argv, char *optstring)
 #define MUTATION_CHANCE 20
 #define ADDITION_CHANCE 10
 #define DELETION_CHANCE 30
+#define BACKGROUND_R 0
+#define BACKGROUND_G 0
+#define BACKGROUND_B 0
 #define SWAP_CHANCE 40
 #define TEMP_STEP 0.0001
 #define NOSEED 0
@@ -120,7 +123,10 @@ usage(const char *name)
     print_option("-d", TOS(DELETION_CHANCE), "triangle deletion chance");
     print_option("-s", TOS(SWAP_CHANCE), "triangles swap chance");
     print_option("-t", TOS(TEMP_STEP), "iteration temperature step");
-    print_option("-r", "false", "skip random generator seeding");
+    print_option("-r", TOS(BACKGOUND_R), "background red");
+    print_option("-g", TOS(BACKGOUND_G), "background green");
+    print_option("-b", TOS(BACKGOUND_B), "background blue");
+    print_option("-z", "false", "skip random generator seeding");
     fprintf(stderr, "All chances are expressed as 1 in value provided\n");
 }
 
@@ -139,8 +145,8 @@ Options *
 parse_options(int argc, char **argv)
 {
     int c = 0;
-    char *opts = "hvrf:n:m:a:d:s:t:";
-    char *argopts = "fnmadst";
+    char *opts = "hvzf:n:m:a:d:s:t:r:g:b:";
+    char *argopts = "fnmadstrgb";
 
     if (options != NULL) {
         fprintf(stderr, "Overriding options\n");
@@ -156,6 +162,10 @@ parse_options(int argc, char **argv)
 
     /* default values */
     options->image = NULL;
+    options->noseed = NOSEED;
+    options->bgr = BACKGROUND_R;
+    options->bgg = BACKGROUND_G;
+    options->bgb = BACKGROUND_B;
     options->max_triangles = MAX_TRIANGLES;
     options->addition_chance = ADDITION_CHANCE;
     options->mutation_chance = MUTATION_CHANCE;
@@ -186,8 +196,17 @@ parse_options(int argc, char **argv)
         case 't':
             options->temp_step = atof(optarg);
             break;
-        case 'r':
+        case 'z':
             options->noseed = 1;
+            break;
+        case 'r':
+            options->bgr = atoi(optarg);
+            break;
+        case 'g':
+            options->bgg = atoi(optarg);
+            break;
+        case 'b':
+            options->bgb = atoi(optarg);
             break;
         case 'h':
             usage(argv[0]);
