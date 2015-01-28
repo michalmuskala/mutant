@@ -1,6 +1,7 @@
 #include "image.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "options.h"
 
 int
@@ -106,15 +107,16 @@ rate_image(const Image *original, const Image *modified)
     for (org_pixel = original->buffer, mod_pixel = modified->buffer;
          org_pixel < org_pixel_end;
          mod_pixel++, org_pixel++) {
-        SDL_GetRGB(*org_pixel, original->format, &orgc.r, &orgc.g, &orgc.b);
+        /*
+         * For some reason the colors gets inverted somewhere - this dirty
+         * shamefull hack fixes this, but is terrible!!!
+         */
+        SDL_GetRGB(*org_pixel, original->format, &orgc.g, &orgc.b, &orgc.r);
         SDL_GetRGB(*mod_pixel, modified->format, &modc.r, &modc.g, &modc.b);
 
         rate += color_distance(orgc, modc);
     }
 
-    if (rate != rate) {
-        printf("HERE!!!!\n");
-    }
     return rate / (original->w * original->h) * 100;
 }
 

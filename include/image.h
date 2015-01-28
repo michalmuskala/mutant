@@ -4,9 +4,6 @@
 #include <SDL_image.h>
 #include "color.h"
 
-/* Our default format, try to convert everything to it */
-#define MUTANT_SDL_FORMAT SDL_PIXELFORMAT_RGBA8888
-
 typedef struct {
     int w, h, access;
     unsigned int iformat;

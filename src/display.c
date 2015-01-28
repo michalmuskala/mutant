@@ -142,7 +142,7 @@ init_static_image(const char *name)
         return NULL;
     }
 
-    surface = SDL_ConvertSurfaceFormat(raw, MUTANT_SDL_FORMAT, 0);
+    surface = SDL_ConvertSurfaceFormat(raw, SDL_PIXELFORMAT_RGBA8888, 0);
 
     if (surface == NULL) {
         fprintf(stderr, "Reading image: %s\n", SDL_GetError());
@@ -229,7 +229,7 @@ init_dynamic_image(const int w, const int h)
 
     i->w = w;
     i->h = h;
-    i->iformat = MUTANT_SDL_FORMAT;
+    i->iformat = SDL_PIXELFORMAT_RGBA8888;
     i->access = SDL_TEXTUREACCESS_STREAMING;
     i->texture = SDL_CreateTexture(display->renderer, i->iformat,
                                    i->access, i->w, i->h);

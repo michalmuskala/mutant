@@ -123,11 +123,14 @@ usage(const char *name)
     print_option("-d", TOS(DELETION_CHANCE), "triangle deletion chance");
     print_option("-s", TOS(SWAP_CHANCE), "triangles swap chance");
     print_option("-t", TOS(TEMP_STEP), "iteration temperature step");
-    print_option("-r", TOS(BACKGOUND_R), "background red");
-    print_option("-g", TOS(BACKGOUND_G), "background green");
-    print_option("-b", TOS(BACKGOUND_B), "background blue");
+    print_option("-r", TOS(BACKGROUND_R), "background red");
+    print_option("-g", TOS(BACKGROUND_G), "background green");
+    print_option("-b", TOS(BACKGROUND_B), "background blue");
     print_option("-z", "false", "skip random generator seeding");
+    print_option("-h", "-", "print this help message");
+    print_option("-v", "-", "print information about program");
     fprintf(stderr, "All chances are expressed as 1 in value provided\n");
+    fprintf(stderr, "Colors are expressed in RGB 0-255\n");
 }
 
 static void
