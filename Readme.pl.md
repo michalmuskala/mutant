@@ -1,6 +1,7 @@
 # Mutant
 
-Mutant jest programem do ewoluowania obrazów metodą symulowanego wyżarzania.
+Mutant jest programem do reprodukcji obrazów składających się jedynie z trójkątów
+metodą symulowanego wyżarzania.
 
 ## Użycie programu:
 ```
@@ -25,6 +26,12 @@ Colors are expressed in RGB 0-255
 ```
 
 Program przyjmuje obrazy w formatach: PNG, JPG, BMP, GIF.
+
+## Kod programu
+
+Kod programu dostępny jest pod adresem
+[https://github.com/michalmuskala/mutant](github.com/michalmuskala/mutant)
+i jest objęty licencją MIT rozprowadzaną wraz z kodem źródłowym.
 
 ## Algorytm symulowanego wyżarzania
 
@@ -53,9 +60,12 @@ Program do kompilacji wymaga bibliotek:
 * SDL2_image,
 * biblioteka do otwierania zamierzonych obrazów, np. libpng dla PNG.
 
+W systemie operacyjnym Windows program można skompilować używając
+środowiska MiniGW.
+
 ## Elementy programu
 
-Projekt podzielony jest na następujące moduły (każy ma plik `.c` w folderze
+Projekt podzielony jest na następujące moduły (każdy ma plik `.c` w folderze
 `src/` oraz plik `.h` w folderze `include/`):
 * annealing - implementacja algorytmu symulowanego wyżarzania,
 * color - ocena odległości koloru i obsługa struktury Color,
@@ -65,7 +75,7 @@ Projekt podzielony jest na następujące moduły (każy ma plik `.c` w folderze
 * main - zawiera funkcję main,
 * options - parsowanie opcji podanych z wiersza poleceń, wystawia globalną zmienną
 `options` będącą strukturą opcji domyślnych i podanych przez użytkownika
-* triangle - obsługa pojedyczego trójkątu, resteryzacja, mutacja, losowanie,
+* triangle - obsługa pojedynczego trójkąta, resteryzacja, mutacja, losowanie,
 * triangle_set - obsługa zestawu trójkątów, rasteryzacja, mutacja, kopiowanie.
 
 ## Ważne informacje
@@ -73,8 +83,8 @@ Projekt podzielony jest na następujące moduły (każy ma plik `.c` w folderze
 Funkcje zwracające wskaźnik do struktury zwracają `NULL` w przypadku niepowodzenia.
 Wszystkie takie struktury powinny być zwalniane odpowiednią funkcją.
 
-Funkcje zwracające `int` jako sygnał powodzenia zwracają 0 w przypadku powodzenia,
-lub -1 w przypadku błędów.
+Funkcje zwracające `int` jako sygnał powodzenia zwracają `0` w przypadku powodzenia,
+lub `-1` w przypadku błędów.
 
 ## Kompilacja
 
@@ -90,4 +100,90 @@ $ bin/mutant
 Pod windowsem:
 ```
 TODO
+```
+
+## Interesujące elementy programu
+
+Najciekawszym, a zarazem najbardziej skomplikowanym elementem programu
+jest proces rasteryzacji trójkątów. Użyty algorytm opiera się na
+spostrzeżeniu, iż każdy trójkąt da się podzielić na dwa - jeden o płaskim
+dole i drugi o płaskiej górze, które to trójkąty rasteryzuje się w sposób prosty.
+Na implementację algorytmu składają się 3 funkcje:
+
+* Funkcja wejścia do algorytmu `rasterize_triangle` sprawdza, czy przez przypadek
+nie mamy do czynienia z trójkątem już płaskim z którejś strony, jeśli tak po prostu
+wywołuje odpowiednią funkcję, w przeciwnym wypadku oblicza punkt pozwalający na
+wspomniany podział. Funkcja oczekuje, że trójkąt będzie znormalizowany
+(tzn. `y1 <= y2 <= y3`).
+```c
+void
+rasterize_triangle(const Triangle *t, Image *image)
+{
+    Vertice middle = {0, 0};
+
+    if (t->v2.y == t->v3.y) {
+        rasterize_bottom_triangle(&t->v1, &t->v2, &t->v3, &t->color, image);
+    } else if (t->v1.y == t->v2.y) {
+        rasterize_top_triangle(&t->v1, &t->v2, &t->v3, &t->color, image);
+    } else {
+        middle.x = (int)
+            (t->v1.x
+             + (((double) (t->v2.y - t->v1.y)
+                 / (double) (t->v3.y - t->v1.y))
+                * (t->v3.x - t->v1.x)));
+        middle.y = t->v2.y;
+
+        rasterize_bottom_triangle(&t->v1, &t->v2, &middle, &t->color, image);
+        rasterize_top_triangle(&t->v2, &middle, &t->v3, &t->color, image);
+    }
+}
+```
+
+* Funkcja `rasterize_top_triangle` która przechodzi po wszystkich y należących do
+górnego trójkąta i odpowiednio zwiększając początkową i końcową wartość x rysuje
+poziome linie.
+```c
+static void
+rasterize_top_triangle(const Vertice *v1, const Vertice *v2,
+                       const Vertice *v3, const Color *color,
+                       Image *image)
+{
+    /* invslope = 1 / slope = dx / dy */
+    double invslope1 = 0, invslope2 = 0;
+    double currx1 = 0, currx2 = 0;
+    int curry = 0;
+
+    invslope1 = (double) (v3->x - v1->x) / (v3->y - v1->y);
+    invslope2 = (double) (v3->x - v2->x) / (v3->y - v2->y);
+
+    for (curry = v3->y, currx1 = v3->x, currx2 = v3->x;
+         curry > v1->y;
+         curry--, currx1 -= invslope1, currx2 -= invslope2) {
+        draw_hline(image, curry, (int) currx1, (int) currx2, color);
+    }
+}
+```
+
+* Funkcja `razterize_bottom_triangle` zaimplementowana w sposób analogiczny
+do funkcji poprzedniej.
+```c
+static void
+rasterize_bottom_triangle(const Vertice *v1, const Vertice *v2,
+                          const Vertice *v3, const Color *color,
+                          Image *image)
+{
+    /* invslope = 1 / slope = dx / dy */
+    double invslope1 = 0, invslope2 = 0;
+    double currx1 = 0, currx2 = 0;
+    int curry = 0;
+
+    invslope1 = (double) (v2->x - v1->x) / (v2->y - v1->y);
+    invslope2 = (double) (v3->x - v1->x) / (v3->y - v1->y);
+
+    for (curry = v1->y, currx1 = v1->x, currx2 = v1->x;
+         curry <= v2->y;
+         curry++, currx1 += invslope1, currx2 += invslope2) {
+        draw_hline(image, curry, (int) currx1, (int) currx2, color);
+    }
+}
 ```

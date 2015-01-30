@@ -186,8 +186,9 @@ normalize_triangle(Triangle *t)
 }
 
 static void
-rasterize_top_triangle(const Vertice *v1, const Vertice *v2, const Vertice *v3,
-                       const Color *color, Image *image)
+rasterize_top_triangle(const Vertice *v1, const Vertice *v2,
+                       const Vertice *v3, const Color *color,
+                       Image *image)
 {
     /* invslope = 1 / slope = dx / dy */
     double invslope1 = 0, invslope2 = 0;
@@ -206,7 +207,8 @@ rasterize_top_triangle(const Vertice *v1, const Vertice *v2, const Vertice *v3,
 
 static void
 rasterize_bottom_triangle(const Vertice *v1, const Vertice *v2,
-                          const Vertice *v3, const Color *color, Image *image)
+                          const Vertice *v3, const Color *color,
+                          Image *image)
 {
     /* invslope = 1 / slope = dx / dy */
     double invslope1 = 0, invslope2 = 0;
@@ -235,7 +237,8 @@ rasterize_triangle(const Triangle *t, Image *image)
     } else {
         middle.x = (int)
             (t->v1.x
-             + (((double) (t->v2.y - t->v1.y) / (double) (t->v3.y - t->v1.y))
+             + (((double) (t->v2.y - t->v1.y)
+                 / (double) (t->v3.y - t->v1.y))
                 * (t->v3.x - t->v1.x)));
         middle.y = t->v2.y;
 
