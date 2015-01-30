@@ -246,8 +246,14 @@ rasterize_triangle(const Triangle *t, Image *image)
 
 enum choice {
     MUTATE_POSITION = 0,
+    MUTATE_POSITION2,
+    RANDOMIZE_POSITION,
     MUTATE_COLOR,
+    MUTATE_COLOR2,
+    RANDOMIZE_COLOR,
     MUTATE_ALPHA,
+    MUTATE_ALPHA2,
+    RANDOMIZE_ALPHA,
     CHOICES_COUNT
 };
 
@@ -256,13 +262,25 @@ mutate_triangle(Triangle *triangle, const int max_w, const int max_h)
 {
     switch(rand() % CHOICES_COUNT) {
     case MUTATE_POSITION:
+    case MUTATE_POSITION2:
         mutate_vertices(triangle, max_w, max_h);
         break;
+    case RANDOMIZE_POSITION:
+        randomize_vertices(triangle, max_w, max_h);
+        break;
     case MUTATE_COLOR:
+    case MUTATE_COLOR2:
         mutate_color(triangle);
         break;
+    case RANDOMIZE_COLOR:
+        randomize_color(triangle);
+        break;
     case MUTATE_ALPHA:
+    case MUTATE_ALPHA2:
         mutate_alpha(triangle);
+        break;
+    case RANDOMIZE_ALPHA:
+        randomize_alpha(triangle);
         break;
     default:
         abort();

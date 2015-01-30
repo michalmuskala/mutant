@@ -1,6 +1,6 @@
 CC = gcc
 
-CFLAGS = -Wall -Wextra -pedantic -ansi -g3
+CFLAGS = -Wall -Wextra -pedantic -ansi
 LDFLAGS = -lm
 
 INCLUDES = -Iinclude
@@ -12,6 +12,12 @@ BINDIR = bin
 PROGRAM = mutant
 
 #--- DO NOT CHANGE ANYTHING BELOW ---#
+
+ifdef DEBUG
+CFLAGS += -g3
+else
+CFLAGS += -O2
+endif
 
 ifdef LIBS
 CFLAGS += `pkg-config $(LIBS) --cflags`
