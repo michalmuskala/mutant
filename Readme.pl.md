@@ -57,11 +57,7 @@ Boltzmanna `b(E(w')-E(w),T)`,
 
 Program do kompilacji wymaga bibliotek:
 * SDL2,
-* SDL2_image,
-* biblioteka do otwierania zamierzonych obrazów, np. libpng dla PNG.
-
-W systemie operacyjnym Windows program można skompilować używając
-środowiska MiniGW.
+* SDL2_image.
 
 ## Elementy programu
 
@@ -88,7 +84,8 @@ lub `-1` w przypadku błędów.
 
 ## Kompilacja
 
-Pod systemami unixowymi, np, ArchLinux:
+### *nix
+Przykład dla ArchLinux. Użyj menadżera paczek swojej dystrybucji.
 ```
 $ git clone https://github.com/michalmuskala/mutant
 $ cd mutant
@@ -97,10 +94,39 @@ $ make
 $ bin/mutant
 ```
 
-Pod windowsem:
+### Windows
+* Zainstaluj środowisko MiniGW z http://www.mingw.org/ wraz z pakietami:
+minigw-developer-toolkit, minigw32-base, msys-base
+* Ściągnij źródła projektu (z konsoli MiniGW):
 ```
-TODO
+$ git clone https://github.com/michalmuskala/mutant
+$ cd mutant
 ```
+* Ściągnij biblioteki rozwojowe (Development Libraries) SDL2 dla środowiska
+MiniGW z http://www.libsdl.org/download-2.0.php
+* Ściągnij biblioteki rozwojowe SDL2_image dla środowiska MiniGW
+z https://www.libsdl.org/projects/SDL_image/
+* Rozpakuj obie paczki do katalogu `windeps` projektu.
+* Wersja 2.0.3 biblioteki SDL2 zawiera błąd uniemożliwiający kompilację programu, by go naprawić,
+użyj patcha znajdującego się w katalogu `windeps`, np poprzez komendę
+(z konsoli MiniGW znajdując się w katalogu projektu):
+```
+$ patch windeps/SDL2-2.0.3/include/SDL_platform.h < windeps/SDL_platform.h.patch
+```
+* Skompiluj biblioteki SDL2 i SLD2_image (z konsoli MiniGW zaczynając w katalogu projektu):
+```
+$ pushd windeps/SDL2-2.0.3
+$ make native
+$ popd
+$ pushd windeps/SDL2_image-2.0.0
+$ make native
+$ popd
+```
+* Skompiluj program (z konsoli MiniGW będąc w katalogu projektu):
+```
+$ make all
+```
+* Uruchom program znajdujący się w katalogu `bin` z konsoli (cmd.exe lub MiniGW).
 
 ## Interesujące elementy programu
 

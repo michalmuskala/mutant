@@ -4,7 +4,14 @@ CFLAGS = -Wall -Wextra -pedantic -ansi
 LDFLAGS = -lm
 
 INCLUDES = -Iinclude
-LIBS = sdl2 SDL2_image
+
+ifeq ($(OS),Windows_NT)
+CFLAGS += `sdl2-config --cflags`
+LDFLAGS += `sdl2-config --libs` -llibSDL2_image
+else
+CFLAGS += `pkg-config sdl2 SDL2_image --cflags`
+LDFLAGS += `pkg-config sdl2 SDL2_image --libs`
+endif
 
 SOURCEDIR = src
 BUILDDIR = build
@@ -17,11 +24,6 @@ ifdef DEBUG
 CFLAGS += -g3
 else
 CFLAGS += -O2
-endif
-
-ifdef LIBS
-CFLAGS += `pkg-config $(LIBS) --cflags`
-LDFLAGS += `pkg-config $(LIBS) --libs`
 endif
 
 SOURCES := $(wildcard $(SOURCEDIR)/*.c)

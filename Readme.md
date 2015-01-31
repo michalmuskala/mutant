@@ -6,7 +6,6 @@ Mutant is a program to evolve images using simulated annealing method.
 
 * SDL2,
 * SDL2_image,
-* libpng for PNG, etc.
 
 ## Compiling
 
@@ -19,7 +18,8 @@ $ make
 $ bin/mutant
 ```
 
-Windows:
-```
-TODO
-```
+Under windows use MiniGW.
+
+## License
+
+Project is licensed under MIT license distrubuted along the sourcecode.
