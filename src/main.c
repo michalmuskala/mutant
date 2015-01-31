@@ -7,6 +7,7 @@
 #include "events.h"
 #include "annealing.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 
 static Image *original = NULL;
